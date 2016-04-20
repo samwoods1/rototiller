@@ -3,6 +3,7 @@ require 'rototiller/utilities/env_var'
 require 'forwardable'
 
 class ParamCollection
+  attr_accessor :collection
 
   # This may be useful if we use individual ParamCollection objects for EnvVars and Flags
   extend Forwardable

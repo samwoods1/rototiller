@@ -38,7 +38,12 @@ class CommandFlag
       @override_env = EnvVar.new({:name => attribute_hash[:override_env], :default => attribute_hash[:default]})
 
       @value = @override_env.value
-      @stop = @override_env.stop
+      if ARGV.include?(@flag) || ARGV[0].include?(@flag)
+        @stop = false
+      else
+        @stop = @override_env.stop
+      end
+
     end
   end
 
@@ -51,7 +56,7 @@ class CommandFlag
   private
   def describe_flag_state
     if @stop
-      required_env = "The CLI flag #{@flag} needs a value.\nYou can specify this value with the environment variable #{override_env.var}"
+      required_env = "The CLI flag #{@flag} needs a value.\nYou can specify this value with the environment variable or command line parameter#{override_env.var}"
       return red_text(required_env)
     else
       flag_with_value = "The CLI flag #{@flag} will be used with value #{@value}."

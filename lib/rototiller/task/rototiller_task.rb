@@ -4,6 +4,7 @@ require 'rototiller/utilities/env_collection'
 require 'rototiller/utilities/flag_collection'
 require 'rototiller/utilities/command_flag'
 require 'rake/tasklib'
+require 'optparse'
 
 module Rototiller
   module Task
@@ -76,6 +77,8 @@ module Rototiller
 
       # @private
       def run_task
+        parse_args
+
         print_messages
         command_str = @command << @flags.to_s
         puts command_str if @verbose
@@ -86,6 +89,28 @@ module Rototiller
         return unless fail_on_error
         $stderr.puts "#{command_str} failed" if @verbose
         exit $?.exitstatus
+      end
+
+      def parse_args
+        # Override the default, or env var if passed as a command line parameter to rake
+        parser = OptionParser.new do |opts|
+          # If you pass a command line param that is not defined as a flag, it will raise an error
+          @flags.collection.each { |flag|
+            opts.on(flag.flag + " [VAL]") { |val|
+              flag.instance_variable_set(:@value, val) unless val.nil?
+            }
+          }
+        end
+
+        # Rubymine apparently munges up ARGV when using a rake configuration... this detects and fixes it for rubymine
+        if(ARGV[0].end_with? ']')
+          new_argv = ARGV[0].sub('[', ' ').chomp(']').split(' ')
+          ARGV.shift
+          ARGV.concat(new_argv)
+        end
+
+        args = parser.order!(ARGV) {}
+        parser.parse!(args)
       end
 
       # @private
