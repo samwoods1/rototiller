@@ -4,9 +4,16 @@
 * [#rototiller_task](#rototiller_task)
   * [#add_command](#rototiller_task:add_command)
   * [#add_env](#rototiller_task:add_env)
-* [Command](#Command)
-  * [#add\_env](#Command:add_env)
-  * [#add\_switch](#Command:add_switch)
+  * [Command](#Command)
+    * [#add\_env](#Command:add_env)
+    * [#add\_switch](#Command:add_switch)
+      * [#add\_env](#Command:add_switch:add_env)
+    * [#add\_option](#Command:add_option)
+      * [#add\_env](#Command:add_option:add_env)
+      * [#add\_argument](#Command:add_option:add_argument)
+        * [#add\_env](#Command:add_option:add_argument:add_env)
+    * [#add\_argument](#Command:add_argument)
+      * [#add\_env](#Command:add_argument:add_env)
 
 <a name="rototiller_task"></a>
 ## #rototiller_task
@@ -28,8 +35,19 @@
 * If the parent does not call the `name=` method and the method `default=` is called under `add_env` the value passed to `default=` is the default
 * If the parent does not call the `name=` method and the method `name=` is called under `add_env` the task will only continue if a value is found in the environment
 * if specified with a default value, and the system environment does not have this variable set, rototiller will set it, for later use in a task or otherwise
-* Specific uses are described in [add_env reference examples](docs/env_var_example_reference.md)
-* FIXME: add a bunch more examples with messaging and default values
+* the same method can be used for any portion of a [command](#Command:add_env) as well, including command name, options, option arguments, switches, and command arguments.  In these cases the environment variable's value will override that portion of the command string.
+
+| Environment Variable and Task/Command Interactions |
+| has default?  | exists in ENV? | rototiller creates | rototiller stops |
+| ------------  | -------------- | ------------------ | ---------------- |
+|      n        |       n        |        n           |         y        |
+| ------------  | -------------- | ------------------ | ---------------- |
+|      n        |       y        |        n           |         n        |
+| ------------  | -------------- | ------------------ | ---------------- |
+|      y        |       n        |        y           |         n        |
+| ------------  | -------------- | ------------------ | ---------------- |
+|      y        |       y        |        n           |         n        |
+
 
 &nbsp;
 
@@ -117,7 +135,31 @@ produces:
 ### #add_argument
 * adds an arbitrary string to a command
   * intended to add `--switch` type binary switches that do not take arguments (see [add_option](#Command:add_option))
-  * add_argument is intended to add strings to the end of the command string (options and switches are added prior to arguments
+  * add\_argument is intended to add strings to the end of the command string (options and switches are added prior to arguments
+
+<a name="Command:add_switch:add_env"></a>
+<a name="Command:add_argument:add_env"></a>
+#### #add_env
+* just like the other `#add_env` methods for other portions of a Command
+* adds an arbitrary environment variable which overrides the name of the switch or argument
+* if specified with a default value, and the system environment does not have this variable set, rototiller will set it, for later use in a task or otherwise
+
+<a name="Command:add_option"></a>
+### #add_option
+
+<a name="Command:add_option:add_env"></a>
+#### #add_env
+* adds an arbitrary environment variable which overrides the name of the option (usually the thing with the --)
+* just like the other `#add_env` methods for other portions of a Command
+
+<a name="Command:add_option:add_argument"></a>
+#### #add_argument
+* adds an arbitrary string to trail an option (aka: an option argument)
+
+<a name="Command:add_option:add_argument:add_env"></a>
+##### #add_env
+* adds an arbitrary environment variable which overrides the name of _argument_ of this option
+* just like the other `#add_env` methods for other portions of a Command
 
 &nbsp;
 
@@ -139,7 +181,7 @@ produces:
           o.add_argument do |arg|
             arg.name = 'argument'
             arg.add_env({:name => 'ARG_OVERRIDE', :message => 'message at the env for argument'})
-            arg.message = 'This is the message at the option argument level'
+            arg.message = 'This is the message at the option-argument level'
           end
         end
       end
