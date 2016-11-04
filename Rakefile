@@ -41,7 +41,7 @@ rototiller_task :acceptance => [:generate_host_config] do |t|
     flag.name = '--preserve-hosts'
     flag.default = 'onfail'
     flag.message = 'The beaker setting to preserve a provisioned host'
-    flag.override_env = 'BEAKER_PRESERVE-HOSTS'
+    flag.override_env = 'BEAKER_PRESERVE_HOSTS'
   end
   t.add_flag do |flag|
     flag.name = '--keyfile'
