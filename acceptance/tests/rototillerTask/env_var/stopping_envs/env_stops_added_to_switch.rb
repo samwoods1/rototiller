@@ -16,7 +16,11 @@ test_name 'An ENV should be able to stop when attached to a switch' do
   block_body = {
       :add_command => {
           :name => 'echo RUNNING',
-          :add_switch => { :add_env => stopping_env }
+          :message => 'I am a message for the command',
+          :add_switch => { :add_env => stopping_env },
+          :add_option => { :name => '--option',
+                           :add_argument => {:name => 'option_argument'},
+          }
       }
   }
 

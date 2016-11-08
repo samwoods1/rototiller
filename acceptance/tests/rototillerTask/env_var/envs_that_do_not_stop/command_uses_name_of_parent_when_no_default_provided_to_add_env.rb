@@ -16,7 +16,12 @@ test_name 'A command should use the commands name when default is not supplied t
   block_body = {
       :add_command => {
           :add_env => env_no_default,
-          :name => "echo I_am_the_commands_name"
+          :name => "echo I_am_the_commands_name",
+          :message => 'I am a message for the command',
+          :add_switch => {:name => '--switch'},
+          :add_option => { :name => '--option',
+                           :add_argument => {:name => 'option_argument'},
+          }
       }
   }
 

@@ -10,7 +10,12 @@ test_name 'An env should error when supplied an invalid character for an ENV' do
   invalid_characters = ['-', '=', '$'].each do |character|
     block_body = {
         :add_command => {
-            :add_env => {:name => "bad_#{character}", :message => 'I am bad', :default => 'SO BAD!'}
+            :add_env => {:name => "bad_#{character}", :message => 'I am bad', :default => 'SO BAD!'},
+            :message => 'I am a message for the command',
+            :add_switch => {:name => '--switch'},
+            :add_option => { :name => '--option',
+                             :add_argument => {:name => 'option_argument'},
+            }
         }
     }
 

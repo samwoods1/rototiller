@@ -8,6 +8,7 @@ test_name 'Multiple ENVs should stop when attached at all possible levels' do
   extend TestUtilities
 
   # ENVs for every level
+  # specail case???
   # no default assumed at task level
   task_env          = {:name => 'TASK_STOP',        :message => 'I will stop the task'}
 
@@ -29,6 +30,7 @@ test_name 'Multiple ENVs should stop when attached at all possible levels' do
   block_body = {
       :add_env => task_env,
       :add_command => {
+          :message => 'I am a message for the command',
           :add_env => command_env,
           :add_argument => command_arg_env,
           :add_switch => { :add_env => switch_env},

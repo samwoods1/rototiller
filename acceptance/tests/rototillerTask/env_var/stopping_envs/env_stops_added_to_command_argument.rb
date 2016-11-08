@@ -16,7 +16,12 @@ test_name 'An ENV should be able to stop when attached to a command argument' do
   block_body = {
       :add_command => {
           :name         => 'echo RUNNING',
-          :add_argument => { :add_env => stopping_env }
+          :message      => 'I am a message for the command',
+          :add_switch   => { :name => '--switch'},
+          :add_option   => { :name => '--option', :add_argument => { :name => 'option_argument'}},
+          :add_argument => { :message => 'I am the message attached to the Argument',
+                             :add_env => stopping_env
+          }
       }
   }
 

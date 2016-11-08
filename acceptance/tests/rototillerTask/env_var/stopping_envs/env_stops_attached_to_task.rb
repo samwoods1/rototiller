@@ -2,7 +2,7 @@ require 'beaker/hosts'
 require 'rakefile_tools'
 require 'test_utilities'
 
-test_name 'An ENV should be able to stop when attached to a task' do
+test_name 'An ENV should be able to stop when attached to a switch' do
   extend Beaker::Hosts
   extend RakefileTools
   extend TestUtilities
@@ -13,7 +13,17 @@ test_name 'An ENV should be able to stop when attached to a task' do
 
   @block_syntax = 'block_syntax'
 
-  block_body = { :add_env => stopping_env }
+  block_body = {
+      :add_env => stopping_env,
+      :add_command => {
+          :name => 'echo RUNNING',
+          :message => 'I am a message for the command',
+          :add_switch => {:name => '--switch'},
+          :add_option => { :name => '--option',
+                           :add_argument => {:name => 'option_argument'},
+          }
+      }
+  }
 
   rakefile_contents = <<-EOS
 #{rototiller_rakefile_header}

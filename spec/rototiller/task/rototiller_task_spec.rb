@@ -1,4 +1,4 @@
-require 'spec_helper'
+ require 'spec_helper'
 require 'stringio'
 
 module Rototiller::Task
@@ -172,6 +172,7 @@ module Rototiller::Task
               # this won't yet be set before add_command completes. is this okay?
               #expect(c.name).to eq('my_shiny_new_command')
             end
+            # not sure why this is calling exit twice
             expect(task).to receive(:exit)
             expect{ described_run_task }
               .to output(/my_shiny_new_command:( command)? not found/)

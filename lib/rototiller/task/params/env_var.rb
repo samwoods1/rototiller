@@ -110,7 +110,7 @@ module Rototiller
       # @private
       def env_value_provided_by_user?
         # its possible that name could not be set
-        (ENV.key?(@name) if @name) ? true : false
+        true if (ENV.key?(@name) if @name)
       end
 
       # @private

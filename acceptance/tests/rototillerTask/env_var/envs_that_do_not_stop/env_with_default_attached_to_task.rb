@@ -16,7 +16,12 @@ test_name 'An ENV should not stop when attached to a task with a default' do
   block_body = {
       :add_env => env_with_default,
       :add_command => {
-          :name => "echo RUNNING $#{env_with_default[:name]}"
+          :name => "echo RUNNING $#{env_with_default[:name]}",
+          :message => 'I am a message for the command',
+          :add_switch => {:name => '--switch'},
+          :add_option => { :name => '--option',
+                           :add_argument => {:name => 'option_argument'},
+          }
       }
   }
 
