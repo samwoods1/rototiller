@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+require 'rubygems'
 
 # place all development, system_test, etc dependencies here
 
@@ -22,8 +23,12 @@ group :development do
   gem 'markdown'             ,'~> 0'
   # restrict version to enable ruby 1.9.3
   gem 'mime-types'           ,'~> 2.0'
-  gem 'google-api-client','<= 0.9.4'
+  gem 'google-api-client'    ,'<= 0.9.4'
   gem 'activesupport'        ,'< 5.0.0'
+  # restrict version to enable ruby 1.9.3 <-> 2.0.0
+  if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0.0')
+    gem 'public_suffix'      ,'<= 1.4.6'
+  end
 end
 
 local_gemfile = "#{__FILE__}.local"

@@ -11,8 +11,9 @@ Gem::Specification.new do |s|
   s.homepage      = "https://github.com/puppetlabs/rototiller"
   s.version       = Rototiller::Version::STRING
   s.license       = 'Apache-2.0'
-  s.files = Dir['CONTRIBUTING.md', 'LICENSE.md', 'MAINTAINERS', 'README.md',
-                'lib/**/*', 'docs/**/*']
+  s.files         = Dir['CONTRIBUTING.md', 'LICENSE.md', 'MAINTAINERS',
+                        'README.md', 'lib/**/*', 'docs/**/*']
+  s.required_ruby_version = '>= 1.9.3'
 
   #Run time dependencies
   rake_version = ENV['RAKE_VER'] || '11.0'
