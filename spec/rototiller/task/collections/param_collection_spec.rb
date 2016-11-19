@@ -36,7 +36,7 @@ module Rototiller
         end
       end
 
-      context '#format_messages' do
+      context '#messages' do
         let(:vars) do
           [
             set_env_1_with_default, set_env_2_with_default, set_env_1_no_default,
@@ -48,34 +48,13 @@ module Rototiller
         it 'should work with no arguments' do
           param_collection.push(*vars)
 
-          messages = param_collection.format_messages
+          messages = param_collection.messages
 
           vars.each do |var|
             expect(messages).to match(/#{var.name}/)
           end
         end
 
-        let(:env_message_header) {"The environment variable:"}
-        it 'should work with one filter' do
-          skip('Fails due to messaging')
-          param_collection.push(*vars)
-
-          #[unset_env_1_no_default,
-          [unset_env_2_no_default].each do |var|
-            expected_message = /31mERROR: #{env_message_header} '#{var.name}' is required: description/
-            expect(param_collection.format_messages({:stop => true})).to match(expected_message)
-          end
-        end
-
-        it 'should work with two filters' do
-          skip('Fails due to messaging')
-          param_collection.push(*vars)
-
-          [set_env_1_no_default, set_env_2_no_default].each do |var|
-            expected_message = /32mINFO: #{env_message_header} '#{var.name}' was found with value: '#{ENV[var.name]}'/
-            expect(param_collection.format_messages({:default => nil, :message_level => :info})).to match(expected_message)
-          end
-        end
       end
 
     end

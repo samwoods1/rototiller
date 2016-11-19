@@ -15,6 +15,7 @@ module Rototiller
         term = ENV['TERM']
         pager = ENV['PAGER']
         lines = ENV['LINES']
+        bundle_major_deprecations = ENV['BUNDLE_MAJOR_DEPRECATIONS']
         allow(ENV).to receive(:[]).with('PRYRC').and_return(pryrc)
         allow(ENV).to receive(:[]).with('DISABLE_PRY').and_return(disable_pry)
         allow(ENV).to receive(:[]).with('HOME').and_return(home)
@@ -22,10 +23,11 @@ module Rototiller
         allow(ENV).to receive(:[]).with('TERM').and_return(term)
         allow(ENV).to receive(:[]).with('PAGER').and_return(pager)
         allow(ENV).to receive(:[]).with('LINES').and_return(lines)
+        allow(ENV).to receive(:[]).with('BUNDLE_MAJOR_DEPRECATIONS').and_return(bundle_major_deprecations)
 
         @switch_name  = random_string
-        @args = {:name => @switch_name}
-        @block = Proc.new { |b| b.name = @switch_name }
+        @args = {:name => @switch_name, :message => 'killer message'}
+        @block = Proc.new { |b| b.name = @switch_name; b.message = 'killer message'}
       end
 
       describe '#name' do
@@ -134,10 +136,10 @@ module Rototiller
       end
 
       describe '#message' do
-        #it 'returns the formatted message' do
-        #pending('FIXME: figure out if env should always be set')
-        #expect(@switch.message).to eq(@formatted_message)
-        #end
+        it 'returns the formatted message' do
+          @formatted_message = 'killer message'
+          expect(switch.message).to eq(@formatted_message)
+        end
       end
     end
 

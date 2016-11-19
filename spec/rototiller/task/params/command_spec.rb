@@ -26,8 +26,8 @@ module Rototiller
         @arg_name      = "VARNAME_#{(0...8).map { (65 + rand(26)).chr }.join}"
         @command_name  = 'echo'
         #FIXME: refactor these so we better do blocks vs hashes
-        @args = {:name => @command_name, :add_argument => {:name => @arg_name}}
-        @block = Proc.new { |b| b.name = @command_name; b.add_argument({:name => @arg_name}) }
+        @args = {:name => @command_name, :add_argument => {:name => @arg_name}, :message => 'killer message'}
+        @block = Proc.new { |b| b.name = @command_name; b.add_argument({:name => @arg_name}); b.message = 'killer message'}
       end
 
       describe '#name' do
@@ -164,10 +164,10 @@ module Rototiller
       end
 
       describe '#message' do
-        #it 'returns the formatted message' do
-        #pending('FIXME: figure out if env should always be set')
-        #expect(@command.message).to eq(@formatted_message)
-        #end
+        it 'returns the formatted message' do
+          @formatted_message = 'killer message'
+          expect(command.message).to eq(@formatted_message)
+        end
       end
     end
 

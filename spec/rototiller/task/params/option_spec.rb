@@ -25,11 +25,8 @@ module Rototiller
 
         @option_name  = random_string
         @argument_name = random_string
-        @args = {:name => @option_name, :add_argument => {:name => @argument_name}}
-        @block = Proc.new do |b|
-          b.name = @option_name
-          b.add_argument({:name => @argument_name})
-        end
+        @args = {:name => @option_name, :add_argument => {:name => @argument_name}, :message => 'killer message'}
+        @block = Proc.new { |b| b.name = @option_name; b.add_argument({:name => @argument_name}); b.message = 'killer message'}
       end
 
       describe '#name' do
@@ -138,10 +135,10 @@ module Rototiller
       end
 
       describe '#message' do
-        #it 'returns the formatted message' do
-        #pending('FIXME: figure out if env should always be set')
-        #expect(@option.message).to eq(@formatted_message)
-        #end
+        it 'returns the formatted message' do
+          @formatted_message = 'killer message'
+          expect(option.message).to eq(@formatted_message)
+        end
       end
     end
 
