@@ -1,6 +1,7 @@
     # yes, the indentation is offset by 4. this is how it needs to be indented in the .md files
     #   we could probably fix this later with a template and some tooling to create the docs files
     # try me:  rake -T --rakefile docs/Rakefile.example
+    # these two tasks are for the README.md file
     require 'rototiller'
 
     desc 'the old, bad way. This is for the README.md file.'
@@ -13,6 +14,7 @@
 
     desc 'the new, rototiller way. This is for the README.md file.'
       rototiller_task :demo_new do |t|
+        # at the task level there is no implicit/automatic default for environment variables.  they must be specified if the environment variable is `optional`
         t.add_env({:name => 'FOO', :message => 'I am describing FOO, my task needs me, but has a default. this default will be set in the environment unless it exists', :default => 'FOO default'})
         t.add_env do |e|
           e.name    = 'HOME'
@@ -21,7 +23,7 @@
 
         t.add_command do |c|
           c.name = 'echo my_sweet_command ${HOME}'
-          c.add_env({:name => 'COMMAND_NAME', :message => 'use me to override this command name (`echo my_sweet_command`)'})
+          c.add_env({:name => 'COMMAND_NAME', :message => 'use me to override this command name (`echo my_sweet_command ${HOME}; i default to the name of the command to which i was added`)'})
           c.add_switch({:name => '--switch', :message => 'echo uses --switch to switch things'})
           # FYI, add_switch can also take a block and/or add_env
           # command blocks also have add_option, and add_arg, each of which can add environment variables which override themselves.
@@ -29,16 +31,25 @@
         end
       end
 
-    # This example Rakefile should be kept in sync with the README.md file
+    # This example Rakefile should be kept in sync with the markdown docs files
     # This can be used by us and users as an example for all functionality
-
-    desc 'parent task for dependent tasks. this one also uses two environment variables and two commands. This is for the reference file.'
+    # everything below here is for *reference.md
+    desc 'parent task for dependent tasks. this one also uses two environment variables and multiple commands.'
       rototiller_task :parent_task do |task|
         # most method initializers take either a hash, or block syntax (see next task)
-        task.add_env({:name     => 'RANDOM_VAR', :default => 'default value'})
-        task.add_env({:name     => 'RANDOM_VAR2', :default => 'default value2'})
-        task.add_command({:name => "echo 'i am running this command with $RANDOM_VAR = #{ENV['RANDOM_VAR']}'"})
-        task.add_command({:name => "echo 'some other command!'"})
+        # this first one would cause rototiller to error
+        #task.add_env({:name     => 'NO_VALUE_NO_DEFAULT'})
+        ENV['HAS_VALUE_NO_DEFAULT'] = 'from environment'
+        task.add_env({:name     => 'HAS_VALUE_NO_DEFAULT'})
+        #ENV['NO_VALUE_HAS_DEFAULT'] = 'from environment'
+        # rototiller will set this in the environment so the task, programs, can use it
+        task.add_env({:name     => 'NO_VALUE_HAS_DEFAULT',  :default => 'default value'})
+        ENV['HAS_VALUE_HAS_DEFAULT'] = 'from environment'
+        task.add_env({:name     => 'HAS_VALUE_HAS_DEFAULT', :default => 'default value'})
+        #task.add_command({:name => 'echo NO_VALUE_NO_DEFAULT:  "$NO_VALUE_NO_DEFAULT"'})
+        task.add_command({:name => 'echo HAS_VALUE_NO_DEFAULT:  \"$HAS_VALUE_NO_DEFAULT\"'})
+        task.add_command({:name => 'echo NO_VALUE_HAS_DEFAULT:  \"$NO_VALUE_HAS_DEFAULT\"'})
+        task.add_command({:name => 'echo HAS_VALUE_HAS_DEFAULT: \"$HAS_VALUE_HAS_DEFAULT\"'})
       end
 
     desc 'override command-name with environment variable. This is for the reference file.'
@@ -52,24 +63,29 @@
     end
 
 
-    desc "add command-switch or option or argument with overriding environment variables"
+    desc "add command-switch or option or argument with overriding environment variables." +
+         "also give examples of how messaging works across the various portions of the API"
     rototiller_task :variable_switch do |task|
       task.add_command do |cmd|
         cmd.name = 'echo command_name'
+        cmd.message = 'using `echo` to show how to override command portions using environment vars'
         cmd.add_switch do |s|
           s.name = '--switch'
-          s.add_env({:name => 'CRASH_OVERRIDE'})
+          s.add_env({:name => 'CRASH_OVERRIDE', :message => 'this env overrides `switch`'})
+          s.message = 'switch: a binary (on or off) switch'
         end
         cmd.add_argument do |a|
           a.name = 'arguments go last'
-          a.add_env({:name => 'ARG_OVERRIDE'})
+          a.add_env({:name => 'ARG_OVERRIDE', :message => 'this env overrides `arguments go last`'})
+          a.message = 'argument `arguments go last`: an argument for the command (echo)'
         end
         cmd.add_option do |o|
           o.name = '--option'
-          o.add_env({:name => 'OPT_OVERRIDE'})
+          o.add_env({:name => 'OPT_OVERRIDE', :message => 'this env overrides --option'})
+          o.message = 'an option: options are like switches, but can take arguments'
           o.add_argument do |arg|
             arg.name = 'argument'
-            arg.add_env({:name => 'ARG_OVERRIDE', :message => 'message at the env for argument'})
+            arg.add_env({:name => 'OPT_ARG_OVERRIDE', :message => 'message at the env for option argument'})
             arg.message = 'This is the message at the option argument level'
           end
         end

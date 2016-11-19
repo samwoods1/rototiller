@@ -36,6 +36,7 @@
 * If the parent does not call the `name=` method and the method `name=` is called under `add_env` the task will only continue if a value is found in the environment
 * if specified with a default value, and the system environment does not have this variable set, rototiller will set it, for later use in a task or otherwise
 * the same method can be used for any portion of a [command](#Command:add_env) as well, including command name, options, option arguments, switches, and command arguments.  In these cases the environment variable's value will override that portion of the command string.
+* more add_env use cases can be seen in the [env\_var\_example\_reference](env_var_example_reference.md)
 
 | Environment Variable and Task/Command Interactions |
 | has default?  | exists in ENV? | rototiller creates | rototiller stops |
@@ -86,7 +87,7 @@ produces:
 ### #add_env
 * adds an arbitrary environment variable which overrides the name of the command
 * if specified with a default value, and the system environment does not have this variable set, rototiller will set it, for later use in a task or otherwise
-* FIXME: add a bunch more examples with messaging and default values
+* more add_env use cases can be seen in the [env\_var\_example\_reference](env_var_example_reference.md)
 
 &nbsp;
 
@@ -143,6 +144,7 @@ produces:
 * just like the other `#add_env` methods for other portions of a Command
 * adds an arbitrary environment variable which overrides the name of the switch or argument
 * if specified with a default value, and the system environment does not have this variable set, rototiller will set it, for later use in a task or otherwise
+* more add_env use cases can be seen in the [env\_var\_example\_reference](env_var_example_reference.md)
 
 <a name="Command:add_option"></a>
 ### #add_option
@@ -151,6 +153,7 @@ produces:
 #### #add_env
 * adds an arbitrary environment variable which overrides the name of the option (usually the thing with the --)
 * just like the other `#add_env` methods for other portions of a Command
+* more add_env use cases can be seen in the [env\_var\_example\_reference](env_var_example_reference.md)
 
 <a name="Command:add_option:add_argument"></a>
 #### #add_argument
@@ -160,6 +163,7 @@ produces:
 ##### #add_env
 * adds an arbitrary environment variable which overrides the name of _argument_ of this option
 * just like the other `#add_env` methods for other portions of a Command
+* more add_env use cases can be seen in the [env\_var\_example\_reference](env_var_example_reference.md)
 
 &nbsp;
 
