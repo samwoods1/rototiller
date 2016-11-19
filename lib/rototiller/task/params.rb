@@ -7,14 +7,12 @@ module Rototiller
       #include BlockHandling
       include HashHandling
 
-      #TODO add initialize method to this base class
-
-      attr_accessor :name, :message
+      attr_accessor :name
+      attr_accessor :message
 
       def message
-        ''
+        return ''
       end
-
     end
 
   end

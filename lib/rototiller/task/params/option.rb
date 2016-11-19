@@ -48,6 +48,11 @@ module Rototiller
         return true if @arguments.stop?
         return true unless @name
       end
+
+      def message
+        return [@message, @env_vars.messages, @arguments.messages].join('')
+      end
+
     end
   end
 end

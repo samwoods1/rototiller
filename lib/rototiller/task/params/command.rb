@@ -53,15 +53,16 @@ module Rototiller
         #   have to do it this way so EnvVar doesn't become a collection
         #   but if this gets moved to a mixin, it might be more tolerable
         if block_given?
-          new_env_var = EnvVar.new(&block)
-          @env_vars.push(new_env_var)
+          # send in the name of this Param, so it can be used when no default is given to add_env
+          @env_vars.push(EnvVar.new({:parent_name => @name},&block))
         else
           #TODO: test this with array and non-array single hash
           args.each do |arg| # we can accept an array of hashes, each of which defines a param
             error_string = "#{__method__} takes an Array of Hashes. Received Array of: '#{arg.class}'"
             raise ArgumentError.new(error_string) unless arg.is_a?(Hash)
-            new_env_var = EnvVar.new(arg)
-            @env_vars.push(new_env_var)
+            # send in the name of this Param, so it can be used when no default is given to add_env
+            arg[:parent_name] = @name
+            @env_vars.push(EnvVar.new(arg))
           end
         end
         @name = @env_vars.last if @env_vars.last
@@ -165,6 +166,15 @@ module Rototiller
       def stop
         return true if [@switches, @options, @arguments].any?{ |collection| collection.stop? }
         return true unless @name
+      end
+
+      def message
+        return [@message,
+                @env_vars.messages,
+                @switches.messages,
+                @options.messages,
+                @arguments.messages,
+        ].join('')
       end
 
       private

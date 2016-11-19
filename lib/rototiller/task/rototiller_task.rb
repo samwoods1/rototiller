@@ -15,8 +15,6 @@ module Rototiller
       attr_reader :name
       # FIXME: make fail_on_error per-command
       attr_accessor :fail_on_error
-      # FIXME: make this per-command
-      attr_accessor :failure_message
 
       def initialize(*args, &task_block)
         @name          = args.shift
@@ -41,7 +39,6 @@ module Rototiller
       # @option args [String] :name The environment variable
       # @option args [String] :default The default value for the environment variable
       # @option args [String] :message A message describing the use of this variable
-      # @option args [Boolean] :required Is used internally by CommandFlag, ignored for a standalone EnvVar
       #
       # for block {|a| ... }
       # @yield [a] Optional block syntax allows you to specify information about the environment variable, available methods match hash keys
@@ -92,8 +89,8 @@ module Rototiller
 
       # @private
       def print_messages
-        puts @commands.format_messages
-        puts @env_vars.format_messages
+        puts @commands.messages
+        puts @env_vars.messages
       end
 
       # @private
@@ -112,10 +109,12 @@ module Rototiller
           command.run
           command_failed = command.result.exit_code > 0
 
-          $stderr.puts failure_message if failure_message && command_failed
-          $stderr.puts "'#{command}' failed" if @verbose && command_failed
-
-          exit command.result.exit_code if fail_on_error && command_failed
+          if command_failed
+            $stderr.puts "'#{command}' failed" if @verbose
+            $stderr.puts command.message
+            $stderr.puts @env_vars.messages
+            exit command.result.exit_code if fail_on_error
+          end
         end
         # might be useful in output of t.add_command()?  but if not, Command has #result
         return @commands.map{ |command| command.result }
