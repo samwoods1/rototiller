@@ -15,14 +15,9 @@ test_name 'A command should use the default when supplied one through add_env' d
   @block_syntax = 'block_syntax'
 
   block_body = {
-      :add_command => {
-          :add_env => env_with_default,
-          :message => 'I am a message for the command',
-          :add_switch => {:name => '--switch'},
-          :add_option => { :name => '--option',
-                           :add_argument => {:name => 'option_argument'},
-          }
-      }
+    :add_command => {
+      :add_env => env_with_default,
+    }
   }
 
   rakefile_contents = <<-EOS

@@ -14,14 +14,12 @@ test_name 'An ENV should be able to stop when attached to an option argument' do
   @block_syntax = 'block_syntax'
 
   block_body = {
-      :add_command => {
-          :name       => 'echo RUNNING',
-          :message    => 'I am a message for the command',
-          :add_switch => { :name => '--switch'},
-          :add_option => { :name => '--option',
-                           :add_argument => { :add_env => stopping_env}
-          }
+    :add_command => {
+      :name       => 'echo RUNNING',
+      :add_option => { :name => '--option',
+                       :add_argument => { :add_env => stopping_env}
       }
+    }
   }
 
   rakefile_contents = <<-EOS
