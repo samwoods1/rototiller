@@ -4,8 +4,6 @@ require 'test_utilities'
 
 test_name 'add_env to argument can stop an option' do
 
-  skip_test 'Unimplemented halting functionality for option'
-
   extend Beaker::Hosts
   extend RakefileTools
   extend TestUtilities
@@ -20,15 +18,15 @@ test_name 'add_env to argument can stop an option' do
   @block_syntax = 'block_syntax'
   #TODO alter to make option stop
   block_body = {
-      :add_command => {
-          :name => 'echo', :add_option => {
-              :name => option_name, :add_argument => {
-                  :name => option_argument, :add_env => {
-                      :name => override_env,
-                  }
-              }
+    :add_command => {
+      :name => 'echo', :add_option => {
+        :name => option_name, :add_argument => {
+          :add_env => {
+            :name => override_env,
           }
+        }
       }
+    }
   }
 
   # create a second task defined with hash syntax
@@ -49,14 +47,14 @@ end
   rakefile_path = create_rakefile_on(sut, rakefile_contents)
 
   step 'Run rake task defined in block syntax, ENV not set (should stop)' do
-    execute_task_on(sut, @block_syntax, rakefile_path) do |result|
+    execute_task_on(sut, @block_syntax, rakefile_path, :accept_all_exit_codes => true) do |result|
       command_regex = /#{option_name} #{option_argument}/
       assert_no_match(command_regex, result.stdout, "The rake task #{@block_syntax} was expected to stop, but the task ran")
     end
   end
 
   step 'Run rake task with add_option defined as a hash, ENV not set (should stop)' do
-    execute_task_on(sut, @hash_syntax, rakefile_path) do |result|
+    execute_task_on(sut, @hash_syntax, rakefile_path, :accept_all_exit_codes => true) do |result|
       command_regex = /#{option_name} #{option_argument}/
       assert_no_match(command_regex, result.stdout, "The rake task #{@hash_syntax} was expected to stop, but the task ran")
     end

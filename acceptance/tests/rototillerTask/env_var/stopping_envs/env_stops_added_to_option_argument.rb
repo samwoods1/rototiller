@@ -36,8 +36,7 @@ end
 
       assert_no_match(/RUNNING/, result.stdout, "The command ran when it wasn't expected to")
 
-      #TODO what should this be???? curently this does not message correctly
-      rototiller_output_regex = //
+      rototiller_output_regex = /ERROR: environment-variable not set.*no default.*#{stopping_env[:name]}.*#{stopping_env[:message]}/
       assert_msg = 'The expected output was not observed'
       assert_match(rototiller_output_regex, result.stdout, assert_msg)
       assert(result.exit_code == 1, 'The expected error message was not observed')

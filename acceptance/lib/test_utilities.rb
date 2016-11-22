@@ -27,8 +27,14 @@ module TestUtilities
   end
 
   def execute_task_on(host, task_name=nil, rakefile_path=nil, opts={})
-    step "Execute task '#{task_name}', ensure success"
+    if opts[:accept_all_exit_codes]
+      step "Execute task '#{task_name}'"
+    else
+      step "Execute task '#{task_name}', ensure success"
+    end
+
     command = "bundle exec rake #{task_name}"
+    command = command + " --verbose" if opts[:verbose]
     command = command + " --rakefile #{rakefile_path}" if rakefile_path
     on(host, command, :accept_all_exit_codes => true) do |result|
       unless opts[:accept_all_exit_codes]
