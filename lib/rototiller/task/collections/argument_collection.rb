@@ -5,6 +5,7 @@ module Rototiller
   module Task
 
     class ArgumentCollection < SwitchCollection
+      # @return [Type] allowed class for this collection (Argument)
       def allowed_class
         Argument
       end

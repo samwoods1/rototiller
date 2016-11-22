@@ -37,6 +37,8 @@ module Rototiller
         end
       end
 
+      # @return [String] current value of this Option and its argument, based upon itself, defaults and environment variables
+      #   used to form the complete, runable command string
       def to_str
         [@name.to_s, @arguments.to_s].compact.join(' ')
       end
@@ -49,6 +51,9 @@ module Rototiller
         return true unless @name
       end
 
+      # @return [String] formatted messages from all of Option's pieces
+      #   itself, env_vars, arguments
+      # TODO make private method? so that it will throw an error if yielded to?
       def message
         return [@message, @env_vars.messages, @arguments.messages].join('')
       end

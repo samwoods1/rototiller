@@ -6,11 +6,13 @@ module Rototiller
 
     class EnvCollection < ParamCollection
 
+      # @return [Type] allowed class for this collection (EnvVar)
       def allowed_class
         EnvVar
       end
 
       # remove the nils and return the last known value
+      # @return [String] last set environment variable or default
       def last
         if self.any?
           last_known_env_var = self.map{|x| x.value}.compact.last

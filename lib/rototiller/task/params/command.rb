@@ -43,10 +43,11 @@ module Rototiller
       # @param [Hash] args hashes of information about the environment variable
       # @option args [String] :name The environment variable
       # @option args [String] :default The default value for the environment variable
+      #                                  this is optional and defaults to the parent's `:name`
       # @option args [String] :message A message describing the use of this variable
       #
       # for block {|a| ... }
-      # @yield [a] Optional block syntax allows you to specify information about the environment variable, available methods match hash keys
+      # @yield [a] Optional block syntax allows you to specify information about the environment variable, available methods match hash keys described above
       def add_env(*args, &block)
         raise ArgumentError.new("#{__method__} takes a block or a hash") if !args.empty? && block_given?
         # this is kinda annoying we have to do this for all params? (not DRY)
@@ -68,6 +69,13 @@ module Rototiller
         @name = @env_vars.last if @env_vars.last
       end
 
+      # adds switch(es) (binary option flags) to this Command instance with optional env_var overrides
+      # @param [Hash] args hashes of information about the switch
+      # @option args [String] :name The switch string, including any '-', '--', etc
+      # @option args [String] :message A message describing the use of this variable
+      #
+      # for block {|a| ... }
+      # @yield [a] Optional block syntax allows you to specify information about the environment variable, available methods match hash keys described above
       def add_switch(*args, &block)
         raise ArgumentError.new("#{__method__} takes a block or a hash") if !args.empty? && block_given?
         # this is kinda annoying we have to do this for all params? (not DRY)
@@ -85,6 +93,14 @@ module Rototiller
         end
       end
 
+      # adds option to append to command (a switch with an argument)
+      #   add_option creates an option object which has its own `#add_env`, `#add_argument` methods
+      # @param [Hash] args hashes of information about the option
+      # @option args [String] :name The value to be used as the option
+      # @option args [String] :message A message describing the use of option
+      #
+      # for block {|a| ... }
+      # @yield [a] Optional block syntax allows you to specify information about the option, available methods match hash keys
       def add_option(*args, &block)
         raise ArgumentError.new("#{__method__} takes a block or a hash") if !args.empty? && block_given?
         # this is kinda annoying we have to do this for all params? (not DRY)
@@ -123,9 +139,9 @@ module Rototiller
         end
       end
 
-      # TODO make private method? so that it will throw an error if yielded to?
       # convert a Command object to a string (runable command string)
-      # @return [String]
+      # @return [String] the current value of the command string as built from its params
+      # TODO make private method? so that it will throw an error if yielded to?
       def to_str
         delete_nil_empty_false([
           (name if name),
@@ -139,6 +155,7 @@ module Rototiller
       Result = Struct.new(:output, :exit_code, :pid)
       # run Command locally, capture relevent result data
       # @return [Struct<Result>] a Result Struct with stdout, stderr, exit_code members
+      # TODO make private method? so that it will throw an error if yielded to?
       def run
         # make this look a bit like beaker's result class
         #   we may have to convert this to a class if it gets complex
@@ -163,11 +180,15 @@ module Rototiller
       # Does this param require the task to stop
       # Determined by the interactions between @name, @env_vars, @options, @switches, @arguments
       # @return [true|nil] if this param requires a stop
+      # TODO make private method? so that it will throw an error if yielded to?
       def stop
         return true if [@switches, @options, @arguments].any?{ |collection| collection.stop? }
         return true unless @name
       end
 
+      # @return [String] formatted messages from all of Command's pieces
+      #   itself, env_vars, switches, options, arguments
+      # TODO make private method? so that it will throw an error if yielded to?
       def message
         return [@message,
                 @env_vars.messages,

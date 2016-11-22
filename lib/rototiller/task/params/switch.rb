@@ -62,6 +62,9 @@ module Rototiller
         true unless @name
       end
 
+      # @return [String] formatted messages from all of Switch's pieces
+      #   itself, env_vars
+      # TODO make private method? so that it will throw an error if yielded to?
       def message
         return [@message, @env_vars.messages].join ''
       end

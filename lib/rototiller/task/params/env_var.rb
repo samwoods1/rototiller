@@ -8,11 +8,9 @@ module Rototiller
     #   contains its messaging, status, and whether it is required.
     #   The rototiller Param using it knows what to do with its value.
     # @since v0.1.0
-    # @attr [String]         var      The name of the env_var in the system environment
     # @attr [String]         default  The default value of this env_var to use. if we have a default and
     #   the system ENV does not have a value this implies the env_var is not required. If not default is specified but the parent parameter has a `#name` then that name is used as the default.
     #   Used internally by CommandFlag, ignored for standalone EnvVar.
-    # @attr_reader [Symbol] message_level the debug level of the message, ':warning', ':error', ':info'
     # @attr_reader [Boolean] stop     Whether the state of the EnvVar requires the task to stop
     # @attr_reader [Boolean] value    The value of the ENV based on specified default and environment state
     class EnvVar < RototillerParam

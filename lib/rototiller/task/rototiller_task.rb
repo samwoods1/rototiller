@@ -10,12 +10,13 @@ module Rototiller
     # @attr_reader [String] name The name of the task for calling via Rake
     # @attr [Boolean] fail_on_error Whether or not to fail Rake when an error
     #   occurs (typically when examples fail). Defaults to `true`.
-    # @attr [String] failure_message A message to print to stderr when there are failures.
     class RototillerTask < ::Rake::TaskLib
       attr_reader :name
       # FIXME: make fail_on_error per-command
       attr_accessor :fail_on_error
 
+      # create a task object with rototiller helper methods for building commands and creating debug/log messaging
+      # see the rake-task documentation on things other than {.add_command} and {.add_env}
       def initialize(*args, &task_block)
         @name          = args.shift
         @fail_on_error = true

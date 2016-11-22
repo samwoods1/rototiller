@@ -27,7 +27,7 @@ module Rototiller
       end
 
       # format the messages inside this ParamCollection
-      # @return [String] messages from the contents of this ParamCollection, formatted with newlines
+      # @return [String] messages from the contents of this ParamCollection
       def messages
         @collection.map { |param| param.message }.join('')
       end
