@@ -15,15 +15,6 @@ module Rototiller
         Switch
       end
 
-      # convert a SwitchCollection to a string (runable switch portions of a command string)
-      #   the value sent by author, or overridden by any EnvVar
-      # @return [String] the Switch's value
-      def to_str
-        @collection.join(' ') unless @collection.empty?
-      end
-
-      alias :to_s :to_str
-
     end
   end
 end

@@ -49,6 +49,14 @@ module Rototiller
         @collection.any?{ |param| param.stop }
       end
 
+      # convert a ParamCollection to a string
+      #   the value sent by author, or overridden by any EnvVar
+      # @return [String] the Param's value
+      def to_str
+        @collection.join(' ') unless @collection.empty?
+      end
+      alias :to_s :to_str
+
       private
 
       #@private
