@@ -9,7 +9,7 @@ test_name 'C98542 - EnvVar values must be set in the environment during task exe
 
   step 'Set environment variables on the SUT' do
     sut.add_env_var('ALREADY_SET_SHOULD_PERSIST', 'original_value')
-    sut.add_env_var('ALREADY_SET_SHOULD_UPDATE', 'original_value')  
+    sut.add_env_var('ALREADY_SET_SHOULD_UPDATE', 'original_value')
     sut.clear_env_var('NOT_SET_SHOULD_DEFAULT')
   end
 
@@ -25,7 +25,6 @@ Rototiller::Task::RototillerTask.define_task :#{task_name} do |t|
                :message => 'This is required to already be set ahead of running the task'})
     t.add_env({:name    => 'NOT_SET_SHOULD_DEFAULT',
               :default => 'defaulted_ok',
-              :set_env => true,
               :message => 'This is expected to not be set, it can just default'})
 
     ENV['ALREADY_SET_SHOULD_UPDATE'] = 'updated_value'

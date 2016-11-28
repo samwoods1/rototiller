@@ -2,17 +2,13 @@
 
 A [Rake](https://github.com/ruby/rake) helper library for command-oriented tasks.
 
-:warning: This version of Rototiller (master branch) is a work in progress!
-It is already known that the API will change quite a bit for the next release. These API changes are underway.
-Please see the notes at the top of the [Write](#write) section.
-
 ## Rototiller Goals
+* Reduce effort required to write first-class rake tasks
+* Reduce time and effort to understand how to run rake tasks
 * Simplifies the building of command strings in :rototiller_task for task authors
 * Abstracts the overriding of command string components: commands, switches, options, arguments for task users
 * Unifies and standardizes messaging surrounding the use of environment variables for task operations
 * Reduce duplication in Rakefiles across projects
-* Reduce effort required to write first-class rake tasks
-* Reduce time and effort to understand how to run rake tasks
 
 <a name="install"></a>
 ## Install
@@ -22,15 +18,7 @@ Please see the notes at the top of the [Write](#write) section.
 ## Write
 Rototiller provides a Rake DSL addition called '[rototiller_task](docs/rototiller_task_reference.md)' which is a fully featured Rake task with environment variable handling, messaging and command-string-building functionality.
 
-:warning: The API below will change for the next release.
-The known changes include (not comprehensive):
-* moving `#add_flag` to `Command` and renaming it `#add_option`
-* adding `#add_env` to `Command` and `#add_option`, so one can add multiple environment variables
-* adding `#add_switch` to Command so one does not have to use the `:is_boolean` parameter for `#add_flag`
-* adding some sort of env_var type so one does not have to use the `:required` parameter for `#add_flag`
-* the above will allow for multiple commands in a task with independent option, switch, and environment variable tracking
-
-Rototiller has 4 main _types_ of arguments that can be passed to a command in a task. `RototillerTasks` can accept multiple commands.  Each of these argument types has a similar API that looks similar to `add_command()`.
+Rototiller has 4 main _types_ of arguments that can be passed to a command in a task. `RototillerTasks` can accept multiple commands.  Each of these argument types has a similar API that looks similar to `#add_command`.
 
 <a name="use"></a>
 ## Use

@@ -1,12 +1,21 @@
 source 'https://rubygems.org'
 require 'rubygems'
-
 # place all development, system_test, etc dependencies here
+
+def location_for(place, fake_version = nil)
+  if place =~ /^(git:[^#]*)#(.*)/
+    [fake_version, { :git => $1, :branch => $2, :require => false }].compact
+  elsif place =~ /^file:\/\/(.*)/
+    ['>= 0', { :path => File.expand_path($1), :require => false }]
+  else
+    [place, { :require => false }]
+  end
+end
 
 # in the Rakefile, so we require it in all groups
 rake_version = ENV['RAKE_VER'] || '11.0'
 gem 'rake'                 , "~> #{rake_version}"
-gem 'rototiller'           ,'~> 0.1.0'
+gem "rototiller", *location_for(ENV['TILLER_VERSION'] || '~> 0.1.0')
 gem 'rspec'                ,'~> 3.4.0'
 
 group :system_tests do

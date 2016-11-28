@@ -27,20 +27,9 @@ module Rototiller
       end
 
       # format the messages inside this ParamCollection
-      # @param [Hash] filters any method from inner Type which can be used as a key
-      # @option filters [String, false, true] :stop the value of the return from .stop on EnvVar
-      # @option filters [String, false, true] :message_level the value of the return from .message_level on EnvVar
-      # @option filters [String, false, true] :default the value of the return from .default on EnvVar
-      # @option filters [String, false, true] :message the value of the return from .message on EnvVar
-      # @option filters [String, false, true] :var the value of the return from .var on EnvVar
-      # @return [String] messages from the contents of this ParamCollection, formatted with new lines and color
-      # @example Get the messages where :stop is true & :message_level is :warning
-      def format_messages(filters=nil)
-
-        formatted_message = String.new
-        build_message = lambda { |param| formatted_message << param.message << "\n"}
-        filters ? filter_contents(filters).each(&build_message) : @collection.each(&build_message)
-        formatted_message
+      # @return [String] messages from the contents of this ParamCollection
+      def messages
+        @collection.map { |param| param.message }.join('')
       end
 
       # Do any of the contents of this ParamCollection require the task to stop
@@ -49,28 +38,15 @@ module Rototiller
         @collection.any?{ |param| param.stop }
       end
 
-      private
-
-      #@private
-      def filter_contents(filters={})
-
-        filtered = []
-
-        @collection.each do |param|
-
-          filtered.push(param) if filters.all? do |method, value|
-
-            if param.respond_to?(method)
-              if param.send(method).nil?
-                value.nil?
-              else
-                param.send(method).to_s =~ /#{value.to_s}/
-              end
-            end
-          end
-        end
-        filtered
+      # convert a ParamCollection to a string
+      #   the value sent by author, or overridden by any EnvVar
+      # @return [String] the Param's value
+      def to_str
+        @collection.join(' ') unless @collection.empty?
       end
+      alias :to_s :to_str
+
+      private
 
       #@private
       def check_classes(allowed_klass, *args)

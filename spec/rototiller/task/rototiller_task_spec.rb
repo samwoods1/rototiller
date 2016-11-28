@@ -19,6 +19,7 @@ module Rototiller::Task
         #lines = ENV['LINES']
         #rows = ENV['ROWS']
         #columns = ENV['COLUMNS']
+        #bundle_major_deprecations = ENV['BUNDLE_MAJOR_DEPRECATIONS']
         #allow(ENV).to receive(:[]).with('PRYRC').and_return(pryrc)
         #allow(ENV).to receive(:[]).with('DISABLE_PRY').and_return(disable_pry)
         #allow(ENV).to receive(:[]).with('HOME').and_return(home)
@@ -29,6 +30,7 @@ module Rototiller::Task
         #allow(ENV).to receive(:[]).with('LINES').and_return(lines)
         #allow(ENV).to receive(:[]).with('ROWS').and_return(rows)
         #allow(ENV).to receive(:[]).with('COLUMNS').and_return(columns)
+        #allow(ENV).to receive(:[]).with('BUNDLE_MAJOR_DEPRECATIONS').and_return(bundle_major_deprecations)
       end
       context "new: no args, no block" do
         it "inits members with '#{init_method}' method" do
@@ -84,20 +86,20 @@ module Rototiller::Task
       def silence_output(&block)
         expect(&block).to output(anything).to_stdout.and output(anything).to_stderr
       end
-      context "when `failure_message` is configured" do
+      context "when `command message` is configured" do
         before do
           allow(task).to receive(:exit)
-          task.failure_message = "Bad news"
         end
 
         it 'prints it if the command run failed' do
-          task.add_command({:name => 'exit 1'})
+          task.add_command({:name => 'exit 1', :message => 'Bad news'})
           expect { described_run_task }.to output(/Bad news/).to_stderr
         end
 
         it 'does not print it if the command run succeeded' do
           task.add_command({:name =>  'echo'})
           expect { described_run_task }.not_to output(/Bad/).to_stderr
+          expect { described_run_task }.not_to output(/Bad/).to_stdout
         end
       end
 
@@ -131,7 +133,8 @@ module Rototiller::Task
           expect(task).to_not receive(:exit)
           task.fail_on_error = false
           task.add_command({:name =>  'exit 2'})
-          expect { described_run_task }.to output("").to_stderr
+          # some platforms have two newlines after exit?
+          expect { described_run_task }.to output("\n\n").to_stderr
         end
       end
 
@@ -172,6 +175,7 @@ module Rototiller::Task
               # this won't yet be set before add_command completes. is this okay?
               #expect(c.name).to eq('my_shiny_new_command')
             end
+            # not sure why this is calling exit twice
             expect(task).to receive(:exit)
             expect{ described_run_task }
               .to output(/my_shiny_new_command:( command)? not found/)
@@ -187,60 +191,18 @@ module Rototiller::Task
 
 
       context '#add_env' do
-      # add_env(EnvVar.new(), EnvVar.new(), EnvVar.new())
-      # add_env('FOO', 'This is how you use FOO', 'default_value')
-        #def initialize(var, message, default=false)
         let(:env_name) {unique_env}
         let(:env_desc) {'used in some task for some purpose'}
-        let(:env_default) {'default_value'}
-        let(:env_message_header) {"The environment variable: '#{env_name}'"}
-        it "prints error about missing environment variable created via EnvVar.new()" do
-          skip('Fails due to messaging')
-          task.add_env({:name => env_name, :message => env_desc})
-          expect(task).to receive(:exit)
-          expect{ described_run_task }
-            .to output(/ERROR: #{env_message_header} is required: #{env_desc}/)
-            .to_stdout
-        end
-        #TODO: add warning case
-        it "prints description about missing environment variable with default created via block syntax" do
-          skip('Fails due to messaging')
-          task.add_env do |env|
-            env.name = env_name
-            env.default = env_default
-            env.message = env_desc
-          end
-          expect{ described_run_task }
-            .to output(/INFO: #{env_message_header} is not set. Proceeding with default value: '#{env_default}': #{env_desc}/)
-            .to_stdout
-        end
-        it "prints error about missing environment variable created via add_env" do
-          skip('Fails due to messaging')
-          task.add_env({:name => env_name, :message => env_desc})
-          expect(task).to receive(:exit)
-          expect{ described_run_task }
-            .to output(/ERROR: #{env_message_header} is required: #{env_desc}/)
-            .to_stdout
-        end
-        it "prints description about missing environment variable with default created via add_env" do
-          skip('Fails due to messaging')
-          task.add_env({:name => env_name,:default => env_default, :message => env_desc})
-          expect{ described_run_task }
-            .to output(/INFO: #{env_message_header} is not set. Proceeding with default value: '#{env_default}': #{env_desc}/)
-            .to_stdout
-        end
-        #TODO add INFO case
         #TODO add expect to raise with other case, if possible
         it "raises argument error for too many env string args" do
           expect{ task.add_env('-t', '-t description', 'tvalue2', 'someother') }.to raise_error(ArgumentError)
         end
         it "add_env can take 4 EnvVar args" do
-          skip('Fails due to messaging')
           task.add_env({:name => env_name, :message => env_desc},{:name => 'VAR2', :message => env_desc},
                        {:name => 'VAR3',:message => env_desc},{:name => env_name,:message => env_desc})
           expect(task).to receive(:exit)
           expect{ described_run_task }
-            .to output(/ERROR: #{env_message_header} is required: #{env_desc}.*VAR2.*VAR3.*#{env_name}/m)
+            .to output(/ERROR: environment-variable not set and no default provided:.*#{env_name}.*#{env_desc}.*VAR2.*VAR3.*/m)
             .to_stdout
         end
       end

@@ -14,10 +14,10 @@ test_name 'A command should use the commands name when default is not supplied t
   @block_syntax = 'block_syntax'
 
   block_body = {
-      :add_command => {
-          :add_env => env_no_default,
-          :name => "echo I_am_the_commands_name"
-      }
+    :add_command => {
+      :name => "echo I_am_the_commands_name",
+      :add_env => env_no_default,
+    }
   }
 
   test_env_validation = 'Journey'
@@ -32,7 +32,6 @@ end
   rakefile_path = create_rakefile_on(sut, rakefile_contents)
 
   teardown do
-
     sut.clear_env_var(env_no_default[:name])
   end
 
@@ -42,8 +41,7 @@ end
 
       assert_match(/I_am_the_commands_name/, result.stdout, "The expected command was not observed")
 
-      #TODO what should this be????
-      rototiller_output_regex = //
+      rototiller_output_regex = /INFO: no system environment-variable.*using default.*#{env_no_default[:name]}.*#{env_no_default[:default]}.*#{env_no_default[:message]}/
       assert_msg = 'The expected output was not observed'
       assert_match(rototiller_output_regex, result.stdout, assert_msg)
       assert(result.exit_code == 0, 'The expected message was not observed')
@@ -57,8 +55,7 @@ end
 
       assert_match(/#{test_env_validation}/, result.stdout, "The command was not overridden by the value of the ENV")
 
-      #TODO what should this be????
-      rototiller_output_regex = //
+      rototiller_output_regex = /INFO: environment-variable overridden.*#{env_no_default[:name]}.*#{env_no_default[:default]}.*#{env_no_default[:message]}/
       assert_msg = 'The expected output was not observed'
       assert_match(rototiller_output_regex, result.stdout, assert_msg)
       assert(result.exit_code == 0, 'The expected message was not observed')

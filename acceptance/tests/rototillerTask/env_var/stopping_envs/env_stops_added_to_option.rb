@@ -14,12 +14,12 @@ test_name 'An ENV should be able to stop when attached to an option' do
   @block_syntax = 'block_syntax'
 
   block_body = {
-      :add_command => {
-          :name => 'echo RUNNING',
-          :add_option => { :add_argument => {:name => 'option_argument'},
-                           :add_env => stopping_env
-          }
+    :add_command => {
+      :name => 'echo RUNNING',
+      :add_option => { :add_argument => {:name => 'option_argument'},
+                       :add_env => stopping_env
       }
+    }
   }
 
   rakefile_contents = <<-EOS
@@ -36,8 +36,7 @@ end
 
       assert_no_match(/RUNNING/, result.stdout, "The command ran when it wasn't expected to")
 
-      #TODO what should this be????
-      rototiller_output_regex = //
+      rototiller_output_regex = /ERROR: environment-variable not set.*no default.*#{stopping_env[:name]}.*#{stopping_env[:message]}/
       assert_msg = 'The expected output was not observed'
       assert_match(rototiller_output_regex, result.stdout, assert_msg)
       assert(result.exit_code == 1, 'The expected error message was not observed')

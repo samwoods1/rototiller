@@ -14,10 +14,10 @@ test_name 'An ENV should not stop when attached to a task with a default' do
   @block_syntax = 'block_syntax'
 
   block_body = {
-      :add_env => env_with_default,
-      :add_command => {
-          :name => "echo RUNNING $#{env_with_default[:name]}"
-      }
+    :add_env => env_with_default,
+    :add_command => {
+      :name => "echo RUNNING $#{env_with_default[:name]}",
+    }
   }
 
   rakefile_contents = <<-EOS
@@ -34,8 +34,7 @@ end
 
       assert_match(/RUNNING #{env_with_default[:default]}/, result.stdout, "The ENV was not observed at runtime")
 
-      #TODO what should this be????
-      rototiller_output_regex = //
+      rototiller_output_regex = /INFO: no system environment-variable.*using default.*#{env_with_default[:name]}.*#{env_with_default[:default]}.*#{env_with_default[:message]}/
       assert_msg = 'The expected output was not observed'
       assert_match(rototiller_output_regex, result.stdout, assert_msg)
       assert(result.exit_code == 0, 'The expected error message was not observed')

@@ -27,15 +27,15 @@ test_name 'Multiple ENVs should stop when attached at all possible levels' do
   @block_syntax = 'block_syntax'
 
   block_body = {
-      :add_env => task_env,
-      :add_command => {
-          :add_env => command_env,
-          :add_argument => command_arg_env,
-          :add_switch => { :add_env => switch_env},
-          :add_option => { :add_env => option_env,
-                           :add_argument => { :add_env => option_arg_env },
-          }
+    :add_env => task_env,
+    :add_command => {
+      :add_env => command_env,
+      :add_argument => command_arg_env,
+      :add_switch => { :add_env => switch_env},
+      :add_option => { :add_env => option_env,
+                       :add_argument => { :add_env => option_arg_env },
       }
+    }
   }
 
   rakefile_contents = <<-EOS
@@ -52,8 +52,7 @@ end
 
       assert_no_match(/RUNNING/, result.stdout, "The command ran when it wasn't expected to")
 
-      #TODO what should this be????
-      rototiller_output_regex = //
+      rototiller_output_regex = /ERROR: environment-variable not set.*no default.*#{task_env[:name]}.*#{task_env[:message]}/
       assert_msg = 'The expected output was not observed'
       assert_match(rototiller_output_regex, result.stdout, assert_msg)
       assert(result.exit_code == 1, 'The expected error message was not observed')
