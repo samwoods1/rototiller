@@ -74,150 +74,16 @@ this does, _mostly_ the same as below.  but what do the various environment vari
 * [rototiller\_task reference](docs/rototiller_task_reference.md)
   * contains usage information on all rototiller_task API methods
 
-## Issues
-
-* none. it's perfect, but just in case (sorry, this is Puppet-internal for now)
-* [Jira: Rototiller](https://tickets.puppetlabs.com/issues/?jql=project%20%3D%20QA)
-* [Puppet QA-team](mailto:qa-team@puppet.com)
-
 ## More Documentation
 
 Rototiller is documented using yard
-to view yard docs, including internal Classes and Modules:
-
-First build a local copy of the gem
-
-    $) bundle exec rake build
-
-Next start the yard server
-
-    $) bundle exec yard server
-
-Finally navigate to http://0.0.0.0:8808/ to view the documentation
+* [Rototiller's Yard Docs](http://www.rubydoc.info/github/puppetlabs/rototiller) (API/internal Architecture docs)
 
 ## Contributing
 * [Contributing](CONTRIBUTING.md)
 
-## abandon hope, all ye who enter here
-### All permutations of v2 API (remove and refactor into useful doc sections below upon testing, merge-up to stable)
+## Issues
 
-* all things that can take multiples should use add\_ as precursor to method name
-* all things that only take one should use set\_ as precursor to method name?
-    require 'rototiller'
-
-    ## all task methods
-    rototiller_task :name do |t|
-      t.add_command # t.add_cmd? me no likey
-      t.add_env
-    end
-    rototiller_task do |t|
-      t.set_name = 'string_name' # should this be validated??  e.g.: spaces, etc
-      t.add_command
-      t.add_env
-    end
-
-
-    ## all task's add_env invocations with just name
-    t.add_env('env_name') #required, default messaging
-    t.add_env :env_name
-    t.add_env 'env_name' # implicitly allowed by ruby
-    t.add_env do |e|
-      e.name
-    end
-
-    ## all task's add_env invocations with name, message
-    #t.add_env('env_name')  # impossible
-    t.add_env :env_name do |e|
-    t.add_env 'env_name' do |e|  # should we do this too?
-      e.set_message
-    end
-    t.add_env do |e|
-      e.name
-      e.message
-    end
-
-    ## all task's add_env invocations with name, value
-    #t.add_env('env_name')  # impossible
-    t.add_env :env_name do |e|
-    t.add_env 'env_name' do |e|  # should we do this too?
-      e.default/value  # does value imply the env will be set by rototiller?  does default NOT?
-    end
-    t.add_env do |e|
-      e.name
-      e.default/value
-    end
-
-    ## all task's add_env invocations with name, value, message
-    #t.add_env('env_name')  # impossible
-    t.add_env :env_name do |e|
-      e.default/value  # does value imply the env will be set by rototiller?  does default NOT?
-      e.message
-    end
-    t.add_env do |e|
-      e.name
-      e.default/value
-      e.message
-    end
-
-
-    ## all task's add_command invocations with only name
-    # default messaging, no env override?
-    t.add_command('echo --blah my name is ray')
-    t.add_command :echo
-    t.add_command 'echo'
-    t.add_command do |c|
-      c.name = 'echo'
-    end
-
-    ## all task's add_command invocations with name (string), message
-    #t.add_command('echo --blah my name is ray', 'message') # ArgumentError
-    t.add_command :echo
-    t.add_command 'echo' do |c|
-      c.name = 'echo' # # nomethod error?
-      c.message = 'why we echo'
-    end
-    t.add_command do |c|
-      c.name = 'echo'
-      c.message = 'blah'
-    end
-
-    ## all task's add_command invocations with name (block) (could be same for message?)
-    #t.add_command('echo --blah my name is ray', 'message') # ArgumentError
-    #t.add_command :echo
-    #t.add_command 'echo' do |c|
-    #  c.message = 'blah'
-    #end
-    t.add_command do |c|
-      c.name 'echo' do |n|
-        n.add_env
-      end
-      c.add_arg 'some_arg' do |a|
-        a.add_env
-        a.message
-      end
-      c.add_option '--option_name' do |o|
-        o.add_arg 'switch_arg' do |a|
-          a.add_env 'opion-arg_env' do |e|
-            e.set_name
-            e.set_message
-            e.set_value
-          end
-        end
-        o.add_env 'option-name_env' do |e|
-          e.set_name
-          e.set_message
-          e.set_value
-        end
-        o.message
-      end
-      c.add_switch '--some_switch' do |s|
-        s.add_env 'env_name' do |e|
-          e.set_name
-          e.set_message
-          e.set_value
-        end
-        s.message
-      end
-    end
-
-    #should we be able to add an env for any given message?  i don't see a use case, we should probably just save users from themselves here.
+* none. it's perfect, but just in case:
+  * [Jira: Rototiller](https://tickets.puppetlabs.com/issues/?jql=project%20%3D%20QA) (sorry, this is Puppet-internal for now)
+  * [Puppet QA-team](mailto:qa-team@puppet.com)

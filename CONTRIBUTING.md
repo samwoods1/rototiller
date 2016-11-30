@@ -37,8 +37,25 @@
 * Yard docs are great for other developers, but often are difficult to read for users. If your change impacts user-facing functionality, please include changes to the human-readable markdown docs starting at README.md
 * During the time that you are working on your patch the master Rototiller branch may have changed - you'll want to [rebase](http://git-scm.com/book/en/Git-Branching-Rebasing) before you submit your PR with `git rebase master`.  A successful rebase ensures that your patch will cleanly merge into Rototiller.
 * Submitted patches will be smoke tested through a series of acceptance level tests that ensures basic Rototiller functionality - the results of these tests will be evaluated by a Rototiller team member.  Failures associated with the submitted patch will result in the patch being rejected.
-* Rototiller's Architecture:
-![Rototiller's Architecture](doc/rototiller_class_graph.png)
+
+## Submitting Changes
+
+* Sign the [Contributor License Agreement](http://links.puppet.com/cla).
+* Push your changes to a topic branch in _your_ fork of the repository.
+* Submit a pull request to [Rototiller](https://github.com/puppetlabs/rototiller)
+* PRs are reviewed as time permits.
+
+# Additional Resources
+
+* [Rototiller's Yard Docs](http://www.rubydoc.info/github/puppetlabs/rototiller) (API/internal Architecture docs)
+* [Rototiller's Architecture](docs/rototiller_class_graph.png)
+* [More information on contributing](http://links.puppet.com/contribute-to-puppet)
+* [Contributor License Agreement](http://links.puppet.com/cla)
+* [General GitHub documentation](http://help.github.com/)
+* [GitHub pull request documentation](http://help.github.com/send-pull-requests/)
+* Questions?  Comments?  Contact the Rototiller team at qa-team@puppet.com
+  * The keyword `rototiller` is monitored and we'll get back to you as quick as we can.
+* Rototiller's Architecture: [Rototiller's Architecture](docs/rototiller_class_graph.png)
 
 ## Submitting Changes
 
