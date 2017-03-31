@@ -27,7 +27,7 @@ rototiller_task :acceptance => [:generate_host_config] do |t|
   t.add_env({:name => 'LAYOUT',   :default => 'centos7-64',
              :message => 'The argument to pass to beaker-hostgenerator',
              :set_env => true})
-  t.add_env({:name => 'RAKE_VER', :default => '11.0',
+  t.add_env({:name => 'RAKE_VER', :default => '12.0',
              :message => 'The rake version to use when running unit and acceptance tests',
              :set_env => true})
 
