@@ -17,15 +17,15 @@ rake_version = '>= 0.9.0'
 if ENV['RAKE_VER']
   rake_version = "~> #{ENV['RAKE_VER']}"
 end
-gem 'rake'                 , "#{rake_version}"
+gem 'rake'                   , "#{rake_version}"
 gem "rototiller", *location_for(ENV['TILLER_VERSION'] || '~> 0.1.0')
-gem 'rspec'                ,'~> 3.4.0'
+gem 'rspec'                  ,'~> 3.4.0'
 
 group :system_tests do
-  #gem 'beaker', :path => "../../beaker/"
-  gem 'beaker'               ,'~> 2.22'
+  gem 'beaker'               ,'~> 3.0'
   gem 'beaker-hostgenerator'
-  gem 'public_suffix', '<= 1.4.6'
+  gem 'public_suffix'        ,'<= 1.4.6'
+  gem 'nokogiri'             ,'<= 1.6.9'
 end
 
 group :development do
@@ -36,7 +36,7 @@ group :development do
   # restrict version to enable ruby 1.9.3
   gem 'mime-types'           ,'~> 2.0'
   gem 'google-api-client'    ,'<= 0.9.4'
-  gem 'activesupport'        ,'< 5.0.0'
+  gem 'activesupport'        ,'<  5.0.0'
   # restrict version to enable ruby 1.9.3 <-> 2.0.0
   if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0.0')
     gem 'public_suffix'      ,'<= 1.4.6'
