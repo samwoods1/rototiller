@@ -8,8 +8,9 @@ test_name 'install rototiller' do
   end
   scp_to(sut, gem_name, gem_name)
 
+  rake_version = `rake --version`.split[2]
   if ENV['RAKE_VER']
-    on(sut, "gem install rake --no-document --version #{ENV['RAKE_VER']}")
+    on(sut, "gem install rake --no-document --version #{rake_version}")
   else
     on(sut, "gem install --no-document rake")
   end
