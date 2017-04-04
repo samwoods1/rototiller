@@ -8,11 +8,12 @@ test_name 'install rototiller' do
   end
   scp_to(sut, gem_name, gem_name)
 
-  rake_version = `rake --version`.split[2]
   if ENV['RAKE_VER']
-    on(sut, "gem install rake --force --version #{rake_version}")
+    rake_version = Gem::Version.new(ENV['RAKE_VER']).approximate_recommendation
+    on(sut, "gem install rake --version '#{rake_version}'")
   else
-    on(sut, "gem install rake --force")
+    on(sut, "gem install rake")
   end
+
   on(sut, "gem install ./#{gem_name}")
 end
