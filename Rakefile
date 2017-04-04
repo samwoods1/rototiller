@@ -22,11 +22,13 @@ task :generate_host_config do |t, args|
   sh "cat acceptance/hosts.cfg"
 end
 
+default_rake_ver = '11.0'
+
 rototiller_task :acceptance => [:generate_host_config] do |t|
   t.add_env({:name => 'LAYOUT',   :default => 'centos7-64',
              :message => 'The argument to pass to beaker-hostgenerator',
              :set_env => true})
-  t.add_env({:name => 'RAKE_VER', :default => '12.0',
+  t.add_env({:name => 'RAKE_VER', :default => default_rake_ver,
              :message => 'The rake version to use when running unit and acceptance tests',
              :set_env => true})
 
@@ -72,7 +74,7 @@ end
 
 rototiller_task :check_test do |t|
   t.add_env({:name => 'SPEC_PATTERN', :default => 'spec/', :message => 'The pattern RSpec will use to find tests', :set_env => true})
-  t.add_env({:name => 'RAKE_VER',     :default => '11.0',  :message => 'The rake version to use when running unit tests', :set_env => true})
+  t.add_env({:name => 'RAKE_VER',     :default => default_rake_ver,  :message => 'The rake version to use when running unit tests', :set_env => true})
 end
 
 task :yard => [:'docs:gen']
