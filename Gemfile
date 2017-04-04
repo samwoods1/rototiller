@@ -13,14 +13,7 @@ def location_for(place, fake_version = nil)
 end
 
 # unit tests: --without system_tests development
-# in the Rakefile, so we require it in all groups
-#   this must match the default in the Rakefile, if not specified
-rake_version = '~> 11.0'
-if ENV['RAKE_VER']
-  rake_version = "~> #{ENV['RAKE_VER']}"
-end
-
-gem 'rake'                   , "#{rake_version}"
+gem 'rake'
 gem "rototiller", *location_for(ENV['TILLER_VERSION'] || '~> 0.1.0')
 gem 'rspec'                  ,'~> 3.4.0'
 
