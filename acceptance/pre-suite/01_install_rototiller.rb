@@ -10,9 +10,9 @@ test_name 'install rototiller' do
 
   rake_version = `rake --version`.split[2]
   if ENV['RAKE_VER']
-    on(sut, "gem install rake --version #{rake_version}")
+    on(sut, "gem install rake --force --version #{rake_version}")
   else
-    on(sut, "gem install rake")
+    on(sut, "gem install rake --force")
   end
   on(sut, "gem install ./#{gem_name}")
 end
