@@ -37,7 +37,7 @@ group :system_tests do
     nokogiri_version = '<  1.7.0'
   elsif Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0.0')
     beaker_version   = '~> 2.0'
-    nokogiri_version = '~> 1' # any
+    nokogiri_version = '<  1.7.0'
     public_suffix_version = '<  1.5.0'
     activesupport_version = '<  5.0.0'
   end
