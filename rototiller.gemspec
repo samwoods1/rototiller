@@ -17,5 +17,5 @@ Gem::Specification.new do |s|
 
   # RAKE_VER=0.9, 10.0, 11.0
   #   don't use 11.0.0, which probably installs 11.0.1 which has issues
-  s.add_runtime_dependency 'rake'
+  s.add_runtime_dependency 'rake', '< 12.0.0'
 end
