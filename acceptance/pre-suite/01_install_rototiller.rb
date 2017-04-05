@@ -10,9 +10,9 @@ test_name 'install rototiller' do
 
   if ENV['RAKE_VER']
     rake_version = Gem::Version.new(ENV['RAKE_VER']).approximate_recommendation
-    on(sut, "gem install rake --version '#{rake_version}'")
+    on(sut, "gem install rake --force --version '#{rake_version}'")
   else
-    on(sut, "gem install rake")
+    on(sut, "gem install rake --force")
   end
 
   on(sut, "gem install ./#{gem_name}")
