@@ -44,9 +44,7 @@ module RakefileTools
   end
 
   def rototiller_rakefile_header
-    header = <<-HEADER
-      require 'rototiller'
-    HEADER
+    "require 'rototiller'\n"
   end
 
   class RototillerBodyBuilder
