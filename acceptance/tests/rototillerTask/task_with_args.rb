@@ -12,7 +12,7 @@ test_name 'C97795: ensure RototillerTasks can use command line arguments' do
     #{rototiller_rakefile_header}
     rototiller_task :#{rake_task_name}, [:arg1, :arg2] do |t, args|
       if args[:arg2]
-        t.add_command({:name => "echo 'task args: #\{args\}'"})
+        t.add_command({:name => "echo 'task args: #\{args.to_hash\}'"})
       else
         t.add_command({:name => "echo 'task arg1: #\{args[:arg1]\}'"})
       end
