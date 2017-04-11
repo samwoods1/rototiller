@@ -69,7 +69,7 @@ rototiller_task :acceptance => [:generate_host_config] do |t|
     flag.override_env = 'BEAKER_TESTS'
   end
 
-  t.add_command({:name => 'beaker --debug', :override_env => 'BEAKER_EXECUTABLE'})
+  t.add_command({:name => 'beaker --debug --no-ntp --repo-proxy --no-validate', :override_env => 'BEAKER_EXECUTABLE'})
 end
 
 rototiller_task :check_test do |t|
