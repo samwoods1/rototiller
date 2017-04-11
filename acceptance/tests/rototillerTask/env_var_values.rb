@@ -29,9 +29,9 @@ Rototiller::Task::RototillerTask.define_task :#{task_name} do |t|
 
     ENV['ALREADY_SET_SHOULD_UPDATE'] = 'updated_value'
 
-    t.add_command({:name => "echo ALREADY_SET_SHOULD_PERSIST is $ALREADY_SET_SHOULD_PERSIST; "\
-                            "echo ALREADY_SET_SHOULD_UPDATE is $ALREADY_SET_SHOULD_UPDATE; "\
-                            "echo NOT_SET_SHOULD_DEFAULT is $NOT_SET_SHOULD_DEFAULT"})
+    t.add_command({:name => 'echo "ALREADY_SET_SHOULD_PERSIST is $ALREADY_SET_SHOULD_PERSIST \
+                             ALREADY_SET_SHOULD_UPDATE is $ALREADY_SET_SHOULD_UPDATE \
+                             NOT_SET_SHOULD_DEFAULT is $NOT_SET_SHOULD_DEFAULT"'})
 end
 EOS
     rakefile_path = create_rakefile_on(sut, rakefile_contents)
@@ -63,5 +63,5 @@ EOS
                    'Unset environment variable did not take default value during task execution')
     end
   end
-  
+
 end
