@@ -107,7 +107,10 @@ module Rototiller
         @commands.each do |command|
           puts command if @verbose
 
-          command.run
+          begin
+            command.run
+          rescue Errno::ENOENT => e
+          end
           command_failed = command.result.exit_code > 0
 
           if command_failed
