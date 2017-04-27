@@ -41,6 +41,7 @@ acceptance/hosts.cfg
 junit/
 log/
 *.log
+empty.rb # empty test to be used with rake tasks so no acceptance tests are run
 
 # generated fixtures
 spec/fixtures
