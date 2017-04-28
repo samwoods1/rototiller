@@ -181,7 +181,6 @@ module Rototiller
 
         #FIXME: monitor for deadlock?
         while @exitstatus == :not_done
-          sleep 0.001
           begin
             # readpartial will read UP to amount given
             # we should never really need 64k, but it makes the responsiveness
@@ -192,7 +191,9 @@ module Rototiller
             next
           end
           @result.output << this_read
-          puts this_read
+          $stdout.sync = true # print stuff right away
+          print this_read
+          sleep 0.001
         end
 
         if block_given? # if block, send result to the block
