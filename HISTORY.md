@@ -1,10 +1,244 @@
-# qe_rototiller_bump_and_tag_master - History
+# rototiller - History
 ## Tags
-* [LATEST - 29 Nov, 2016 (11c841a7)](#LATEST)
+* [LATEST - 28 Apr, 2017 (e51e3cdb)](#LATEST)
+* [1.0.0 - 29 Nov, 2016 (bfa87d0a)](#1.0.0)
 * [0.1.0 - 16 May, 2016 (ae2ceabe)](#0.1.0)
 
 ## Details
-### <a name = "LATEST">LATEST - 29 Nov, 2016 (11c841a7)
+### <a name = "LATEST">LATEST - 28 Apr, 2017 (e51e3cdb)
+
+* Merge pull request #75 from er0ck/acceptance/master/QA-2851-Pry_not_functional_during_Rototiller_task-fix-newline-issue (e51e3cdb)
+
+
+```
+Merge pull request #75 from er0ck/acceptance/master/QA-2851-Pry_not_functional_during_Rototiller_task-fix-newline-issue
+
+(QA-2851) Fix missing pry prompts and extra newlines in stdout
+```
+* (QA-2851) Fix missing pry prompts and extra newlines in stdout (3db8f696)
+
+
+```
+(QA-2851) Fix missing pry prompts and extra newlines in stdout
+
+* the previous fix to this ticket used `puts` to print the output stream.
+puts tacks newlines on the end of each string. print does not.
+* we also move the sleep to the end of the loop so it prints asap.
+* `$stdout.sync` addition allows the pry prompt to show up as it syncs
+the buffers before there is user interaction.
+```
+* Merge pull request #74 from er0ck/fix/stable/QA-2941-rototiller_rake12_task_args_object_is_no_longer_a_hash (6916b223)
+
+
+```
+Merge pull request #74 from er0ck/fix/stable/QA-2941-rototiller_rake12_task_args_object_is_no_longer_a_hash
+
+(qa-2941) rototiller rake12 task args object is no longer a hash
+```
+* Merge pull request #73 from er0ck/fix/stable/QA-2851-Pry_not_functional_during_Rototiller_task (9f80dc04)
+
+
+```
+Merge pull request #73 from er0ck/fix/stable/QA-2851-Pry_not_functional_during_Rototiller_task
+
+(qa-2851) pry not functional during rototiller task
+```
+* (maint) add empty.rb to .gitignore (48bb36a9)
+
+* (QA-2941) fix acceptance for rake 12 (f5246728)
+
+* (QA-2941) re-enable rake 12 (5f77f847)
+
+
+```
+(QA-2941) re-enable rake 12
+
+* acceptance previously showed a bug we had against rake 12
+* really rake 12 just clarified how to use arguments to tasks so they
+aren't confused with hashes: https://github.com/ruby/rake/pull/171
+```
+* (maint) fix env_var_values acceptance which probably did not work before (1f34ebc2)
+
+
+```
+(maint) fix env_var_values acceptance which probably did not work before
+
+* i'm not sure how this worked at all.  env_vars certainly update as in
+the test, but the command was not printing as intended.  this might be
+ruby version specific. We added a separate ticket to allow rototiller to
+accept an array of strings for commands, other params (QA-2940).
+```
+* (QA-2851) fix spec tests for ruby < 2 against command.run changes (021167b5)
+
+
+```
+(QA-2851) fix spec tests for ruby < 2 against command.run changes
+
+* Process.spawn changed between ruby 1.9 and 2. It no longer ENOENTs
+upon a builtin like `exit` which it completely *can* find.
+* we should probably handle this better later to make it consistent.
+but since ruby 1.9.3 is EOL, we probably shouldn't care
+```
+* (maint) make beaker setup steps much faster (904b4fc0)
+
+* (QA-2851) acceptance: allow arbitrary options to #execute_task_on (e17e1ba7)
+
+* (QA-2851) Pry not functional during Rototiller task (80d1d588)
+
+
+```
+(QA-2851) Pry not functional during Rototiller task
+
+- open3 libraries use Process.detach to relinquish control of
+  subprocesses. This causes any debugging breakpoints or calls to
+  interactive programs from rototiller to stall waiting on input we can
+  never give it. This change uses Process.spawn to create a subprocess,
+  inherit our stdin and pipe the results back to us for result.output
+- some versions of gnu readline WILL corrupt the stdin to pry and the
+  output, and byebug.  This appears to be an issue in readline 7. One
+  solution is to use rb-readline in a gem bundle.  In somecases you can
+  persuade rvm, for instance, to install editline, which does not seem
+  to exhibit this bug. more info: https://github.com/pry/pry/issues/1275
+- this change also includes a beaker system-test for this change
+```
+* (maint) acceptance: correct multiple require headers in test Rakefiles (eeff8ec2)
+
+* (QA-2851) update unit tests to better test against command run changes (118363c7)
+
+
+```
+(QA-2851) update unit tests to better test against command run changes
+
+- we can fix up some unit tests after the change to Process.spawn.  We
+  also have better handling of ENOENT, update the tests for that.
+```
+* Merge pull request #72 from er0ck/fix/stable/maint-fix_acceptance_no_bundler_net-ssh_pin (2a5b8321)
+
+
+```
+Merge pull request #72 from er0ck/fix/stable/maint-fix_acceptance_no_bundler_net-ssh_pin
+
+(maint) fix acceptance bundle
+```
+* (maint) re-add Gemfile.lock to .gitignore (974dc6c3)
+
+* (maint) who knew gem install could be so complicated? (73a1bed8)
+
+
+```
+(maint) who knew gem install could be so complicated?
+
+* force installs of rake to overwrite exes in osx
+```
+* (maint) acceptance: install implied rake version on sut (4a7b5749)
+
+* (maint) rake version in Gemfile should not matter (15fe2573)
+
+* (maint) acceptance: force rake gem install over system rake (829c32a3)
+
+* (maint) argh. some rubygem versions don't have --no-document (bb863adc)
+
+* (maint) fix acceptance bundle nokogiri ruby < 2 (a8dc77e4)
+
+* (maint) fix acceptance bundle (a65a3d93)
+
+
+```
+(maint) fix acceptance bundle
+
+* we can't commit a Gemfile.lock as we sweep one of our deps (rake)
+  * unit test job uses bundle install not bundle update
+* pin some deps here.  next major we'll require ruby > 2
+```
+* (maint) require < rake 12; we have a bug there (6204cccb)
+
+* (maint) fix previous acceptance bundler on-sut removal (f947535f)
+
+
+```
+(maint) fix previous acceptance bundler on-sut removal
+
+* a previous commit removed the bundle on the SUT
+* forgot to commit the changes to the test to not specify bundle exec
+```
+* (maint) fix acceptance install for non-whole rake version strings (cba04b50)
+
+
+```
+(maint) fix acceptance install for non-whole rake version strings
+
+* previous change did not account for when x.y.z rake version strings were not specified.
+```
+* (maint) remove bundler/gem_tasks from Rakefile (b160a347)
+
+
+```
+(maint) remove bundler/gem_tasks from Rakefile
+
+* i guess we never got around to adding Gem building tasks
+```
+* Merge pull request #71 from er0ck/fix/stable/QA-2887-Rototiller_should_not_depend_on_Rake_11_x_for_realz (b5f1f6fa)
+
+
+```
+Merge pull request #71 from er0ck/fix/stable/QA-2887-Rototiller_should_not_depend_on_Rake_11_x_for_realz
+
+(qa-2887) rototiller should not depend on rake 11 x for realz
+```
+* (QA-2887) Rototiller should not depend on Rake 11 x for realz (68c3035c)
+
+
+```
+(QA-2887) Rototiller should not depend on Rake 11 x for realz
+
+* previous commit totally forgot to take into account the gemspec file
+* this commit also fixes our acceptance install of rototiller
+```
+* (maint) pin nokogiri for acceptance tests against older ruby (ea634dbb)
+
+* Merge pull request #69 from er0ck/fix/stable/QA-2887-Rototiller_should_not_depend_on_Rake_11_x (82995273)
+
+
+```
+Merge pull request #69 from er0ck/fix/stable/QA-2887-Rototiller_should_not_depend_on_Rake_11_x
+
+(QA-2887) Rototiller should not depend on Rake 11
+```
+* (QA-2887) Rototiller should not depend on Rake 11 (f2169c6c)
+
+
+```
+(QA-2887) Rototiller should not depend on Rake 11
+
+* previously the gemfile would require ~> 11.0 if no env was set
+* this causes problems with beaker who requires ~>10.0
+* set to anything greater/equal than 0.9.0 unless the env is used
+```
+* Merge pull request #68 from er0ck/maint/stable/fixup_doc_problems (09d5d608)
+
+
+```
+Merge pull request #68 from er0ck/maint/stable/fixup_doc_problems
+
+(maint) fixup doc problems
+```
+* (maint) bump stable version to probable next Z (1a8809fe)
+
+* (maint) fixup doc problems (4c87b28f)
+
+
+```
+(maint) fixup doc problems
+
+* old docs from pre-1.0 left hanging around, now removed
+* remove spurious process for creating yard server
+  * point to rubydoc.org instead
+* fix reference doc table in GH markdown
+* fix reference doc TOC links
+```
+### <a name = "1.0.0">1.0.0 - 29 Nov, 2016 (bfa87d0a)
+
+* (HISTORY) update rototiller history for gem release 1.0.0 (bfa87d0a)
 
 * (GEM) update rototiller version to 1.0.0 (11c841a7)
 
@@ -86,9 +320,9 @@ Merge pull request #65 from james-stocks/QA-2472
 
 (QA-2472) Acceptance test that asserts env vars during task execution
 ```
-* (QA-2690) Stopping on any nested env_var (2d2375da)
-
 * (QA-2690) Stopping on any nested env_var (cd317ff3)
+
+* (QA-2690) Stopping on any nested env_var (2d2375da)
 
 * (QA-2539) clarify reference doc on environment variable cases and messaging (03ca216c)
 
