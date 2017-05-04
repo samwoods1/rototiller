@@ -116,7 +116,11 @@ module Rototiller::Task
           task.__send__(:set_verbose,verbose)
         end
         it 'prints command failed' do
-          expect(task).to receive(:exit).with(2)
+          if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0.0')
+            expect(task).to receive(:exit).with(127)
+          else
+            expect(task).to receive(:exit).with(2)
+          end
 
           #FIXME: despite the silence_output some of these are spewing
           #  this is because we set command to "echo empty RototillerTask. You should define a command, send a block, or EnvVar to track."
@@ -133,8 +137,13 @@ module Rototiller::Task
           expect(task).to_not receive(:exit)
           task.fail_on_error = false
           task.add_command({:name =>  'exit 2'})
-          # some platforms have two newlines after exit?
-          expect { described_run_task }.to output("\n\n").to_stderr
+          # some versions have two newlines after exit?
+          # sigh
+          if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0.0')
+            expect { described_run_task }.to output(/No such file or directory - exit 2/).to_stderr
+          else
+            expect { described_run_task }.to output("\n\n").to_stderr
+          end
         end
       end
 
@@ -152,7 +161,7 @@ module Rototiller::Task
           end
           it 'can override command name with env_var in block as block' do
             # set env first, or command might not have it in time
-            allow(ENV).to receive(:[]).with('BLAH').and_return('my_shiny_new_command')
+            allow(ENV).to receive(:[]).with('BLAH').and_return('echo yeshello')
             task.add_command do |c|
               c.name = 'nonesuch'
               c.add_env do |e|
@@ -161,24 +170,21 @@ module Rototiller::Task
               # this won't yet be set before add_command completes. is this okay?
               #expect(c.name).to eq('my_shiny_new_command')
             end
-            expect(task).to receive(:exit)
             expect{ described_run_task }
-              .to output(/my_shiny_new_command:( command)? not found/)
+              .to output(/yeshello/)
               .to_stdout
           end
           it 'can override command name with env_var in block as hash' do
             # set env first, or command might not have it in time
-            allow(ENV).to receive(:[]).with('BLAH').and_return('my_shiny_new_command')
+            allow(ENV).to receive(:[]).with('BLAH').and_return('echo hellothar')
             task.add_command do |c|
               c.name = 'nonesuch'
               c.add_env({:name => 'BLAH'})
               # this won't yet be set before add_command completes. is this okay?
               #expect(c.name).to eq('my_shiny_new_command')
             end
-            # not sure why this is calling exit twice
-            expect(task).to receive(:exit)
             expect{ described_run_task }
-              .to output(/my_shiny_new_command:( command)? not found/)
+              .to output(/hellothar/)
               .to_stdout
           end
           it 'raises an error when supplied a bad key' do

@@ -12,20 +12,33 @@ def location_for(place, fake_version = nil)
   end
 end
 
-# in the Rakefile, so we require it in all groups
-rake_version = '>= 0.9.0'
-if ENV['RAKE_VER']
-  rake_version = "~> #{ENV['RAKE_VER']}"
-end
-gem 'rake'                 , "#{rake_version}"
+# unit tests: --without system_tests development
+gem 'rake'
 gem "rototiller", *location_for(ENV['TILLER_VERSION'] || '~> 0.1.0')
-gem 'rspec'                ,'~> 3.4.0'
+gem 'rspec'                  ,'~> 3.4.0'
 
 group :system_tests do
-  #gem 'beaker', :path => "../../beaker/"
-  gem 'beaker'               ,'~> 2.22'
+  beaker_version     = '~> 3.0'
+  nokogiri_version   = '~> 1' # any
+  public_suffix_version = '~> 1' # any
+  activesupport_version = '~> 1' # any
+  # restrict gems to enable ruby versions
+  #
+  #   nokogiri comes along for the ride but needs some restriction too
+  if Gem::Version.new(RUBY_VERSION).between?(Gem::Version.new('2.0.0'),Gem::Version.new('2.2.4'))
+    beaker_version   = '<  3.9.0'
+    nokogiri_version = '<  1.7.0'
+  elsif Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0.0')
+    beaker_version   = '~> 2.0'
+    nokogiri_version = '<  1.7.0'
+    public_suffix_version = '<  1.5.0'
+    activesupport_version = '<  5.0.0'
+  end
+  gem 'beaker'               ,"#{beaker_version}"
   gem 'beaker-hostgenerator'
-  gem 'public_suffix', '<= 1.4.6'
+  gem 'nokogiri'             ,"#{nokogiri_version}"
+  gem 'public_suffix'        ,"#{public_suffix_version}"
+  gem 'activesupport'        ,"#{activesupport_version}"
 end
 
 group :development do
@@ -33,14 +46,6 @@ group :development do
   #Documentation dependencies
   gem 'yard'                 ,'~> 0'
   gem 'markdown'             ,'~> 0'
-  # restrict version to enable ruby 1.9.3
-  gem 'mime-types'           ,'~> 2.0'
-  gem 'google-api-client'    ,'<= 0.9.4'
-  gem 'activesupport'        ,'< 5.0.0'
-  # restrict version to enable ruby 1.9.3 <-> 2.0.0
-  if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0.0')
-    gem 'public_suffix'      ,'<= 1.4.6'
-  end
 end
 
 local_gemfile = "#{__FILE__}.local"

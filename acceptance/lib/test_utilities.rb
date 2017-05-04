@@ -33,10 +33,10 @@ module TestUtilities
       step "Execute task '#{task_name}', ensure success"
     end
 
-    command = "bundle exec rake #{task_name}"
+    command = "rake #{task_name}"
     command = command + " --verbose" if opts[:verbose]
     command = command + " --rakefile #{rakefile_path}" if rakefile_path
-    on(host, command, :accept_all_exit_codes => true) do |result|
+    on(host, command, opts) do |result|
       unless opts[:accept_all_exit_codes]
         acceptable_exit_codes = opts[:acceptable_exit_codes] || 0
         acceptable_exit_codes = [acceptable_exit_codes] unless acceptable_exit_codes.is_a?(Array)

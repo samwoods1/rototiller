@@ -1,4 +1,3 @@
-require 'open3'
 require 'rototiller/task/collections/env_collection'
 require 'rototiller/task/collections/switch_collection'
 require 'rototiller/task/collections/option_collection'
@@ -12,7 +11,7 @@ module Rototiller
     # @since v0.1.0
     # @attr [String] name The name of the command to run
     # @attr_reader [Struct] result A structured command result
-    #    contains members: output, exit_code and pid (from Open3.popen2e)
+    #    contains members: output, exit_code and pid
     class Command < RototillerParam
 
       # @return [String] the command to be used, could be considered a default
@@ -161,15 +160,41 @@ module Rototiller
         #   we may have to convert this to a class if it gets complex
         @result = Result.new
         @result.output = ''
-        # add ';' to command string as it is a metacharacter that forces open3
-        #   to send the command to the shell. This returns the correct
-        #   exit_code and stderr, etc when the command is not found
-        Open3.popen2e(self.to_str + ";"){|stdin, stdout_err, wait_thr|
-          stdout_err.each { |line| puts line
-                            @result.output << line }
-          @result.pid    = wait_thr.pid # pid of the started process.
-          @result.exit_code = wait_thr.value.exitstatus # Process::Status object returned.
-        }
+
+        read_pipe, write_pipe = IO.pipe
+        begin
+          @result.pid = Process.spawn(self.to_str, :out => write_pipe, :err => write_pipe)
+        rescue Errno::ENOENT => e
+          $stderr.puts e
+          @result.output << e.to_s
+          @result.exit_code = 127
+          raise
+        end
+        #create a thread that monitors the process and tells us when it is done
+        @exitstatus = :not_done
+        Thread.new do
+          Process.wait(@result.pid);
+          @exitstatus       = $?.exitstatus
+          @result.exit_code = @exitstatus
+          write_pipe.close
+        end
+
+        #FIXME: monitor for deadlock?
+        while @exitstatus == :not_done
+          begin
+            # readpartial will read UP to amount given
+            # we should never really need 64k, but it makes the responsiveness
+            #   of our output much better when something is really quickly spewing output
+            sixty_four_k = 65536
+            this_read = read_pipe.readpartial(sixty_four_k)
+          rescue EOFError
+            next
+          end
+          @result.output << this_read
+          $stdout.sync = true # print stuff right away
+          print this_read
+          sleep 0.001
+        end
 
         if block_given? # if block, send result to the block
           yield @result

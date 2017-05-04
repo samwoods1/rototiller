@@ -57,8 +57,8 @@ module Rototiller
         end
         it 'has results after failed run' do
           command.name = 'doesnotexist'
-          command.run
-          expect( command.result.output.strip ).to match(/sh\: .*doesnotexist\: (command )?not found/)
+          expect{ command.run }.to raise_error(Errno::ENOENT)
+          expect( command.result.output.strip ).to match(/No such file or directory - doesnotexist/)
           expect([2,127]).to include(command.result.exit_code)
         end
         context 'with a block' do
