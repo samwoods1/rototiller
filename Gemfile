@@ -25,8 +25,11 @@ group :system_tests do
   # restrict gems to enable ruby versions
   #
   #   nokogiri comes along for the ride but needs some restriction too
-  if Gem::Version.new(RUBY_VERSION).between?(Gem::Version.new('2.0.0'),Gem::Version.new('2.2.4'))
+  if Gem::Version.new(RUBY_VERSION).between?(Gem::Version.new('2.1.6'),Gem::Version.new('2.2.4'))
     beaker_version   = '<  3.9.0'
+    nokogiri_version = '<  1.7.0'
+  elsif Gem::Version.new(RUBY_VERSION).between?(Gem::Version.new('2.0.0'),Gem::Version.new('2.1.5'))
+    beaker_version   = '<  3.1.0'
     nokogiri_version = '<  1.7.0'
   elsif Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.0.0')
     beaker_version   = '~> 2.0'
