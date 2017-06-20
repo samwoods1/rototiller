@@ -9,78 +9,75 @@ end
 namespace :test do
 
   desc "Run unit tests"
-  RSpec::Core::RakeTask.new(:unit) do |t|
+  RSpec::Core::RakeTask.new('unit') do |t|
     t.rspec_opts = ['--color']
     t.pattern = ENV['SPEC_PATTERN']
   end
 
-  task :test => [:check_test]
-
-  task :generate_host_config do |t, args|
-
-    target = ENV["LAYOUT"] || ENV["TEST_TARGET"] || 'centos7-64'
-    generate = "beaker-hostgenerator"
-    generate += " #{target}"
-    generate += " > acceptance/hosts.cfg"
-    sh generate
-    sh "cat acceptance/hosts.cfg"
-  end
+  task :unit => [:check_unit]
 
   default_rake_ver = '11.0'
+
+  desc "" # empty description so it doesn't show up in rake -T
+  rototiller_task :check_unit do |t|
+    t.add_env({:name => 'SPEC_PATTERN', :default => 'spec/', :message => 'The pattern RSpec will use to find tests'})
+    t.add_env({:name => 'RAKE_VER',     :default => default_rake_ver,  :message => 'The rake version to use when running unit tests'})
+  end
+
+  desc ""
+  #FIXME: this is probably a build task, given that it has an output file
+  rototiller_task :generate_host_config do |t|
+    t.add_command do |bhg_command|
+      bhg_command.name = "beaker-hostgenerator"
+      bhg_command.add_argument do |arg|
+        arg.name = 'centos7-64'
+        arg.add_env({:name => 'LAYOUT'})
+        arg.add_env({:name => 'TEST_TARGET'})
+      end
+      bhg_command.add_argument({:name => 'acceptance/hosts.cfg'})
+    end
+  end
 
   desc "Run acceptance tests"
   rototiller_task :acceptance => [:generate_host_config] do |t|
     t.add_env({:name => 'LAYOUT',   :default => 'centos7-64',
-               :message => 'The argument to pass to beaker-hostgenerator',
-               :set_env => true})
+               :message => 'The beaker-hostgenerator pattern',
+               })
     t.add_env({:name => 'RAKE_VER', :default => default_rake_ver,
-               :message => 'The rake version to use when running unit and acceptance tests',
-               :set_env => true})
+               :message => 'The rake version to use IN unit and acceptance tests',
+               })
 
-    t.add_flag do |flag|
-      flag.name = '--hosts'
-      flag.default = 'acceptance/hosts.cfg'
-      flag.message = 'The configuration file that Beaker will use'
-      flag.override_env = 'BEAKER_HOSTS'
-    end
-    t.add_flag do |flag|
-      flag.name = '--preserve-hosts'
-      flag.default = 'onfail'
-      flag.message = 'The beaker setting to preserve a provisioned host'
-      flag.override_env = 'BEAKER_PRESERVE_HOSTS'
-    end
-    t.add_flag do |flag|
-      flag.name = '--keyfile'
-      flag.default ="#{ENV['HOME']}/.ssh/id_rsa-acceptance"
-      flag.message = 'The SSH key used to access a SUT'
-      flag.override_env = 'BEAKER_KEYFILE'
-    end
-    t.add_flag do |flag|
-      flag.name = '--load-path'
-      flag.default = 'acceptance/lib'
-      flag.message = 'The load path Beaker will use'
-      flag.override_env = "BEAKER_LOAD-PATH"
-    end
-    t.add_flag do |flag|
-      flag.name = '--pre-suite'
-      flag.default = 'acceptance/pre-suite'
-      flag.message = 'THe path to a directory containing pre-suites'
-      flag.override_env = "BEAKER_PRE-SUITE"
-    end
-    t.add_flag do |flag|
-      flag.name = '--tests'
-      flag.default = 'acceptance/tests'
-      flag.message = 'The path to the tests you want beaker to run'
-      flag.override_env = 'BEAKER_TESTS'
+    t.add_command do |command|
+      command.name = "beaker --debug --no-ntp --repo-proxy --no-validate --keyfile #{ENV['HOME']}/.ssh/id_rsa-acceptance --load-path acceptance/lib --pre-suite acceptance/pre-suite"
+      command.add_env({:name => 'BEAKER_EXECUTABLE'})
+
+      command.add_option do |option|
+        option.name = '--hosts'
+        option.message = 'The hosts file that Beaker will use'
+        option.add_argument do |arg|
+          arg.name = 'acceptance/hosts.cfg'
+          arg.add_env({:name => 'BEAKER_HOSTS'})
+        end
+      end
+      command.add_option do |option|
+        option.name = '--preserve-hosts'
+        option.message = 'The beaker setting to preserve a provisioned host'
+        option.add_argument do |arg|
+          arg.name = 'never'
+          arg.add_env({:name => 'BEAKER_PRESERVE_HOSTS'})
+        end
+      end
+      command.add_option do |option|
+        option.name = '--tests'
+        option.message = 'The path to the tests for beaker to run'
+        option.add_argument do |arg|
+          arg.name = 'acceptance/tests'
+          arg.add_env({:name => 'BEAKER_TESTS'})
+        end
+      end
+
     end
 
-    t.add_command({:name => 'beaker --debug --no-ntp --repo-proxy --no-validate', :override_env => 'BEAKER_EXECUTABLE'})
-  end
-
-  desc ""
-  rototiller_task :check_test do |t|
-    t.add_env({:name => 'SPEC_PATTERN', :default => 'spec/', :message => 'The pattern RSpec will use to find tests', :set_env => true})
-    t.add_env({:name => 'RAKE_VER',     :default => default_rake_ver,  :message => 'The rake version to use when running unit tests', :set_env => true})
   end
 
 end
@@ -96,6 +93,7 @@ namespace :docs do
   end
 
   desc 'Generate static documentation'
+  #FIXME: this is probably a build task, given that it has output files
   task :gen do
     original_dir = Dir.pwd
     Dir.chdir( File.expand_path(File.dirname(__FILE__)) )

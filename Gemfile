@@ -14,7 +14,7 @@ end
 
 # unit tests: --without system_tests development
 gem 'rake'
-gem "rototiller", *location_for(ENV['TILLER_VERSION'] || '~> 0.1.0')
+gem "rototiller", *location_for(ENV['TILLER_VERSION'] || '~> 1.0')
 gem 'rspec'                  ,'~> 3.4.0'
 
 group :system_tests do
