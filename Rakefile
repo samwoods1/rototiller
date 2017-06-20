@@ -2,7 +2,9 @@ require 'rspec/core/rake_task'
 require 'fileutils'
 require 'rototiller'
 
-task :default => :test
+task :default do
+  sh %{rake -T}
+end
 
 desc "Run spec tests"
 RSpec::Core::RakeTask.new(:test) do |t|
