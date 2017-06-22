@@ -39,6 +39,7 @@ group :system_tests do
   end
   gem 'beaker'               ,"#{beaker_version}"
   gem 'beaker-hostgenerator'
+  gem "beaker-abs", *location_for(ENV['BEAKER_ABS_VERSION'] || "~> 0.2")
   gem 'nokogiri'             ,"#{nokogiri_version}"
   gem 'public_suffix'        ,"#{public_suffix_version}"
   gem 'activesupport'        ,"#{activesupport_version}"
