@@ -6,6 +6,10 @@ task :default do
   sh %{rake -T}
 end
 
+# temporary backwards compat
+task :test => :'test:unit'
+task :acceptance => :'test:acceptance'
+
 namespace :test do
 
   desc "Run unit tests"
@@ -29,10 +33,15 @@ namespace :test do
   rototiller_task :generate_host_config do |t|
     t.add_command do |bhg_command|
       bhg_command.name = "beaker-hostgenerator"
+      bhg_command.add_argument do |argument|
+        # ugh, this is terrible, but it's the only way in current rototiller
+        argument.name = ENV['BEAKER_ABS'] ? ' --hypervisor=abs' : ''
+        argument.message = 'Use hypervisor abs option for bhg'
+      end
       bhg_command.add_argument do |arg|
         arg.name = 'centos7-64'
-        arg.add_env({:name => 'LAYOUT'})
-        arg.add_env({:name => 'TEST_TARGET'})
+        arg.add_env({:name => 'LAYOUT', :message => 'The beaker-hostgenerator pattern (deprecated)'})
+        arg.add_env({:name => 'TEST_TARGET', :message => 'The beaker-hostgenerator pattern (used even if LAYOUT has a value)'})
       end
       bhg_command.add_argument({:name => 'acceptance/hosts.cfg'})
     end
@@ -40,8 +49,8 @@ namespace :test do
 
   desc "Run acceptance tests"
   rototiller_task :acceptance => [:generate_host_config] do |t|
-    t.add_env({:name => 'LAYOUT',   :default => 'centos7-64',
-               :message => 'The beaker-hostgenerator pattern',
+    t.add_env({:name => 'BEAKER_ABS', :default => '',
+               :message => 'if set, use ABS hypervisor',
                })
     t.add_env({:name => 'RAKE_VER', :default => default_rake_ver,
                :message => 'The rake version to use IN unit and acceptance tests',
@@ -84,8 +93,8 @@ end
 
 namespace :docs do
   YARD_DIR = 'doc'
-  desc 'Clear the generated documentation cache'
-  task :clear do
+  desc 'Clean/remove the generated documentation cache'
+  task :clean do
     original_dir = Dir.pwd
     Dir.chdir( File.expand_path(File.dirname(__FILE__)) )
     sh "rm -rf #{YARD_DIR}"
@@ -127,7 +136,7 @@ namespace :docs do
     Dir.chdir( original_dir )
   end
 
-  desc 'Generate static class/module/method graph'
+  desc 'Generate static class/module/method graph. Calls docs:gen'
   task :class_graph => [:gen] do
     DOCS_DIR = 'docs'
     original_dir = Dir.pwd
