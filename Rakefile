@@ -31,6 +31,7 @@ namespace :test do
   desc ""
   #FIXME: this is probably a build task, given that it has an output file
   rototiller_task :generate_host_config do |t|
+    t.add_command({:name => 'rm -f acceptance/hosts.cfg'})
     t.add_command do |bhg_command|
       bhg_command.name = "beaker-hostgenerator"
       bhg_command.add_argument do |argument|
@@ -43,7 +44,7 @@ namespace :test do
         arg.add_env({:name => 'LAYOUT', :message => 'The beaker-hostgenerator pattern (deprecated)'})
         arg.add_env({:name => 'TEST_TARGET', :message => 'The beaker-hostgenerator pattern (used even if LAYOUT has a value)'})
       end
-      bhg_command.add_argument({:name => 'acceptance/hosts.cfg'})
+      bhg_command.add_argument({:name => '> acceptance/hosts.cfg'})
     end
   end
 
