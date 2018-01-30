@@ -48,7 +48,7 @@ end
 group :development do
   gem 'simplecov'
   #Documentation dependencies
-  gem 'yard'                 ,'~> 0'
+  gem 'yard'                 ,'~> 0.9.11' # CVE-2017-17042
   gem 'markdown'             ,'~> 0'
 end
 
