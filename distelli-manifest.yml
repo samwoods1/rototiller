@@ -16,5 +16,5 @@ slv/rototiller:
   Build:
     - source ~/.rvm/scripts/rvm
     - rvm use 2.4.0
-    - bundle install --without development
+    - bundle install --without system_tests
     - bundle exec rake test:unit
